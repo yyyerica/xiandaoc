@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../Pyverilog-develop/.idea/Pyverilog-develop.iml" filepath="$PROJECT_DIR$/../Pyverilog-develop/.idea/Pyverilog-develop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/pyqt.iml" filepath="$PROJECT_DIR$/.idea/pyqt.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../python-riscv/.idea/python-riscv.iml" filepath="$PROJECT_DIR$/../python-riscv/.idea/python-riscv.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,5 @@
+pyverilog.egg-info/PKG-INFO
+pyverilog.egg-info/SOURCES.txt
+pyverilog.egg-info/dependency_links.txt
+pyverilog.egg-info/requires.txt
+pyverilog.egg-info/top_level.txt
