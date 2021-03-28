@@ -742,13 +742,14 @@ polygon = Polygon([[0, 0], [0, 0]], facecolor='y')  # dummy data for (xs, ys)
 def draw():
     # 点的个数
     num = len(label_list)
-    print(num)
     angles = np.linspace(0, 2 * np.pi, num, endpoint=False)
     radii = 0.05
     x = (radii*np.cos(angles))
     y = (radii*np.sin(angles))
-    pointsize = [45000/num*c for c in value_list]
-    plt.scatter(x, y, s=pointsize, c=np.random.rand(num))
+    pointsize = [45000*c/num for c in value_list]
+    # colormap内容见https://blog.csdn.net/lly1122334/article/details/88535217
+    plt.scatter(x, y, s=pointsize, c=pointsize, cmap=plt.cm.gist_heat)
+
 
     # 添加常见的图形对象。这些对象称为块(patch).完整的patch集合位于matplotlib.patches中
     # 绘制patch对象图形：plt.gca().add_patch(patch_name)
