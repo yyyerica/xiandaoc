@@ -74,8 +74,6 @@ class MainCode(QMainWindow, untitled2.Ui_MainWindow):  # untitled2.Ui_MainWindow
         self.analyzesignal_pre.triggered.connect(self.signalAnalyzePre)
         self.analyzearith_post.triggered.connect(self.signalAnalyzePost)
 
-        trifinder_event_demo.draw()
-
     def openPreFile(self):  # 选择文本文件上传
         file_name = QFileDialog()
         file_name.setFileMode(QFileDialog.ExistingFiles)
@@ -229,7 +227,7 @@ class MainCode(QMainWindow, untitled2.Ui_MainWindow):  # untitled2.Ui_MainWindow
         self.showPDF()
         os.chdir(self.basedirpath)
         # self.showEchart(link_matrix, label_list, value_list)
-
+        # 关键节点图
         trifinder_event_demo.draw(link_matrix, label_list, value_list)
 
     def signalAnalyzePost(self):
@@ -247,7 +245,8 @@ class MainCode(QMainWindow, untitled2.Ui_MainWindow):  # untitled2.Ui_MainWindow
         self.showPDF()
         os.chdir(self.basedirpath)
         # self.showEchart(link_matrix, label_list, value_list)
-
+        # 关键节点图
+        trifinder_event_demo.draw(link_matrix, label_list, value_list)
 
     def signalEnhance(self):
         pre = []
@@ -282,7 +281,6 @@ class MainCode(QMainWindow, untitled2.Ui_MainWindow):  # untitled2.Ui_MainWindow
                 item.setBackground(QBrush(QColor(200, 200, 255)))
 
             self.list_post.addItem(item)
-
 
         self.list_post.currentItemChanged.connect(self.handlePostChanged)
         self.list_post.itemClicked.connect(self.showPostode)
