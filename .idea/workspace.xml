@@ -2,10 +2,132 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="45fee18e-732d-4c81-93a5-0998fdc08a58" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/python_riscv/n_de_encodeScript.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/python_riscv/n_decodeScript.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/python_riscv/n_encodeScript.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pyverilog-develop/newverilog/riscv_csr.v" beforeDir="false" afterPath="$PROJECT_DIR$/Pyverilog-develop/newverilog/riscv_csr.v" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pyverilog-develop/newverilog/riscv_csr_regfile.v" beforeDir="false" afterPath="$PROJECT_DIR$/Pyverilog-develop/newverilog/riscv_csr_regfile.v" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pyverilog-develop/newverilog/riscv_divider.v" beforeDir="false" afterPath="$PROJECT_DIR$/Pyverilog-develop/newverilog/riscv_divider.v" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pyverilog-develop/newverilog/riscv_exec.v" beforeDir="false" afterPath="$PROJECT_DIR$/Pyverilog-develop/newverilog/riscv_exec.v" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pyverilog-develop/newverilog/riscv_fetch.v" beforeDir="false" afterPath="$PROJECT_DIR$/Pyverilog-develop/newverilog/riscv_fetch.v" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pyverilog-develop/newverilog/riscv_issue.v" beforeDir="false" afterPath="$PROJECT_DIR$/Pyverilog-develop/newverilog/riscv_issue.v" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pyverilog-develop/newverilog/riscv_lsu.v" beforeDir="false" afterPath="$PROJECT_DIR$/Pyverilog-develop/newverilog/riscv_lsu.v" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pyverilog-develop/pyverilog/vparser/ast.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pyverilog-develop/pyverilog/vparser/ast.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Pyverilog-develop/report.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/Pyverilog-develop/report.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/trifinder_event_demo.py" beforeDir="false" afterPath="$PROJECT_DIR$/trifinder_event_demo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/.idea/dictionaries" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/.idea/python-riscv.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/de_encodeScript.py" beforeDir="false" afterPath="$PROJECT_DIR$/python_riscv/de_encodeScript.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/decodeScript.py" beforeDir="false" afterPath="$PROJECT_DIR$/python_riscv/decodeScript.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/encodeScript.py" beforeDir="false" afterPath="$PROJECT_DIR$/python_riscv/encodeScript.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/enhanceSecurityTop.py" beforeDir="false" afterPath="$PROJECT_DIR$/python_riscv/enhanceSecurityTop.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll2/SM3_top.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll2/barrel_shifter.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll2/compression_function.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll2/get_cki.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll2/key_expansion.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll2/link_top.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll2/message_expansion.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll2/msg_padding.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll2/one_round_for_encdec.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll2/one_round_for_key_exp.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll2/riscv_core.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll2/riscv_core_1.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll2/sbox_replace.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll2/sm4_encdec.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll2/sm4_top.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll2/transform_for_encdec.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll2/transform_for_key_exp.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll3/SM3_top.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll3/barrel_shifter.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll3/compression_function.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll3/get_cki.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll3/key_expansion.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll3/link_top.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll3/message_expansion.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll3/msg_padding.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll3/one_round_for_encdec.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll3/one_round_for_key_exp.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll3/riscv_core.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll3/riscv_core_1.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll3/sbox_replace.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll3/sm4_encdec.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll3/sm4_top.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll3/transform_for_encdec.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll3/transform_for_key_exp.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/riscv-original/riscv_alu.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/riscv-original/riscv_core.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/riscv-original/riscv_csr.v" beforeDir="false" afterPath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll3/riscv_csr.v" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/riscv-original/riscv_csr_regfile.v" beforeDir="false" afterPath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll3/riscv_csr_regfile.v" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/riscv-original/riscv_decode.v" beforeDir="false" afterPath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll3/riscv_decode.v" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/riscv-original/riscv_decoder.v" beforeDir="false" afterPath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll3/riscv_decoder.v" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/riscv-original/riscv_defs.v" beforeDir="false" afterPath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll3/riscv_defs.v" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/riscv-original/riscv_divider.v" beforeDir="false" afterPath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll3/riscv_divider.v" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/riscv-original/riscv_exec.v" beforeDir="false" afterPath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll3/riscv_exec.v" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/riscv-original/riscv_fetch.v" beforeDir="false" afterPath="$PROJECT_DIR$/python_riscv/sm3_4decode/ll3/riscv_fetch.v" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/riscv-original/riscv_issue.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/riscv-original/riscv_lsu.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/riscv-original/riscv_mmu.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/riscv-original/riscv_multiplier.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/riscv-original/riscv_pipe_ctrl.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/riscv-original/riscv_regfile.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/riscv-original/riscv_trace_sim.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/riscv-original/riscv_xilinx_2r1w.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_decode_code/sm34_decode.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_decode_code/sm34_decode.v.bak" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_decode_code/sm3_sm4_decode_code/SM3_top.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_decode_code/sm3_sm4_decode_code/barrel_shifter.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_decode_code/sm3_sm4_decode_code/compression_function.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_decode_code/sm3_sm4_decode_code/get_cki.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_decode_code/sm3_sm4_decode_code/key_expansion.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_decode_code/sm3_sm4_decode_code/link_top.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_decode_code/sm3_sm4_decode_code/message_expansion.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_decode_code/sm3_sm4_decode_code/msg_padding.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_decode_code/sm3_sm4_decode_code/one_round_for_encdec.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_decode_code/sm3_sm4_decode_code/one_round_for_key_exp.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_decode_code/sm3_sm4_decode_code/sbox_replace.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_decode_code/sm3_sm4_decode_code/sm4_encdec.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_decode_code/sm3_sm4_decode_code/sm4_top.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_decode_code/sm3_sm4_decode_code/transform_for_encdec.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_decode_code/sm3_sm4_decode_code/transform_for_key_exp.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_code/sm34_encode.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_code/sm34_encode.v.bak" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_code/sm3_sm4_encode_code/SM3_top.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_code/sm3_sm4_encode_code/barrel_shifter.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_code/sm3_sm4_encode_code/compression_function.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_code/sm3_sm4_encode_code/get_cki.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_code/sm3_sm4_encode_code/key_expansion.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_code/sm3_sm4_encode_code/link_top.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_code/sm3_sm4_encode_code/message_expansion.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_code/sm3_sm4_encode_code/msg_padding.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_code/sm3_sm4_encode_code/one_round_for_encdec.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_code/sm3_sm4_encode_code/one_round_for_key_exp.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_code/sm3_sm4_encode_code/sbox_replace.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_code/sm3_sm4_encode_code/sm4_encdec.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_code/sm3_sm4_encode_code/sm4_top.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_code/sm3_sm4_encode_code/transform_for_encdec.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_code/sm3_sm4_encode_code/transform_for_key_exp.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_decode_code/sm34_encode_decode.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_decode_code/sm34_encode_decode.v.bak" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_decode_code/sm3_sm4_encode_decode_code/SM3_top.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_decode_code/sm3_sm4_encode_decode_code/barrel_shifter.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_decode_code/sm3_sm4_encode_decode_code/compression_function.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_decode_code/sm3_sm4_encode_decode_code/get_cki.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_decode_code/sm3_sm4_encode_decode_code/key_expansion.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_decode_code/sm3_sm4_encode_decode_code/link_top.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_decode_code/sm3_sm4_encode_decode_code/message_expansion.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_decode_code/sm3_sm4_encode_decode_code/msg_padding.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_decode_code/sm3_sm4_encode_decode_code/one_round_for_encdec.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_decode_code/sm3_sm4_encode_decode_code/one_round_for_key_exp.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_decode_code/sm3_sm4_encode_decode_code/sbox_replace.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_decode_code/sm3_sm4_encode_decode_code/sm4_encdec.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_decode_code/sm3_sm4_encode_decode_code/sm4_top.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_decode_code/sm3_sm4_encode_decode_code/transform_for_encdec.v" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/python_riscv/sm3_4decode/sm3_sm4_encode_decode_code/sm3_sm4_encode_decode_code/transform_for_key_exp.v" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,6 +176,8 @@
       <recent name="$PROJECT_DIR$/Pyverilog-develop" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/python_riscv" />
+      <recent name="$PROJECT_DIR$/Pyverilog-develop/pyverilog/vparser" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/../Pyverilog_develop" />
       <recent name="$PROJECT_DIR$/image" />
@@ -218,6 +342,11 @@
           <url>file:///Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/matplotlib/patches.py</url>
           <line>1000</line>
           <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main.py</url>
+          <line>298</line>
+          <option name="timeStamp" value="10" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

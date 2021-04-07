@@ -59,8 +59,8 @@ def modifyTamplate(templateName, bakFile, name1, num1, clkname, rstname):
             for line in lines:
                 point = point + 1;
                 # print(line);
-                if "sm4_input" in line and "assign" in line:#将sm4输入信号改为对应的读取数据的信号
-                     strline = "\tassign sm4_input = " + name1 + ";\n";
+                if "input_data" in line and "assign" in line:#将input_data输入信号改为对应的读取数据的信号
+                     strline = "\tassign input_data = " + name1 + ";\n";
                      print(strline);
                      line = line.replace(line, strline);
                      CFile.write(line);
@@ -251,9 +251,34 @@ def rstPort(fileName):
                     print(test);
         print(count)
     return rstName;
-                      
+
+def copyvFiles(templatePath, ProjectDir,  DestPath):
+    hasDir(templatePath, DestPath);
+    print('this is copyvfille', templatePath, ProjectDir);
+    s2 = ProjectDir.split(' ')
+    print(s2)
+    for file_name in s2:
+        full_file_name = os.path.join(templatePath, file_name);
+        if os.path.isfile(full_file_name):
+            shutil.copy(full_file_name, DestPath);#拷贝
+#            print("copy file" + full_file_name);
+
+ 
+def copyvFiles(templatePath, ProjectDir,  DestPath):
+    hasDir(templatePath, DestPath);
+    print('this is copyvfille', templatePath, ProjectDir);
+    s2 = ProjectDir.split(' ')
+    print(s2)
+    for file_name in s2:
+        full_file_name = os.path.join(templatePath, file_name);
+        if os.path.isfile(full_file_name):
+            shutil.copy(full_file_name, DestPath);#拷贝
+#            print("copy file" + full_file_name);
+            
+
+ 
 #总体函数
-def enhanceInputSecurity(topFileName, destDir):
+def enhanceInputSecurity(topFileName, projectDir, destDir):
     print('this is my main!');
     workDir = os.getcwd();
     
@@ -265,20 +290,22 @@ def enhanceInputSecurity(topFileName, destDir):
     # bakFile1 = workCopyDir + '\\' + topFilName1[0] + '_1.v' ;
     # bakFile = workCopyDir + '\\' + topFileName;
     # print("fdsfasdfa " + bakFile);
-    workCopyDir = os.path.join(workDir, 'sm3_4decode', 'll1');
-    bakFile = os.path.join(workDir, 'sm3_4decode', 'll1', topFileName)
-    bakFile1 = os.path.join(workDir, 'sm3_4decode', 'll1', topFilName1[0])
+    workCopyDir = os.path.join(workDir, 'zuc', 'll1');
+    bakFile = os.path.join(workDir, 'zuc', 'll1', topFileName)
+    bakFile1 = os.path.join(workDir, 'zuc', 'll1', topFilName1[0])
     bakFile1 = bakFile1 + '_1.v'
     
     hasFile(bakFile1, bakFile);
     bakFileFunction(topFile, bakFile);
     bakFileFunction(topFile, bakFile1);
     
+    copyvFiles(destDir, projectDir, workCopyDir)
+    
     name1 = inputPort(bakFile);
     print(name1);
     num1 = inputNum(bakFile);
     print(num1);
-    templateName = os.path.join(workDir, 'sm3_4decode', 'sm3_sm4_decode_code', 'sm34_decode.v');
+    templateName = os.path.join(workDir, 'zuc', 'decode_code', 'zuc_decode.v');
     # templateName = workDir + '\\sm3_4decode\\sm3_sm4_decode_code\\sm34_decode.v';
     rstname = rstPort(bakFile);
     clkname = clkPort(bakFile);
@@ -288,10 +315,14 @@ def enhanceInputSecurity(topFileName, destDir):
     readFile(bakFile, bakFile1, name1, templateName, num1, clkname, rstname);
     # topFile, bakFile, name1, templateName, num1, clkname, rstname
     print('Modify finish copy file to dest Project!');
-    templatePath = os.path.join(workDir, 'sm3_4decode', 'sm3_sm4_decode_code', 'sm3_sm4_decode_code');
+    templatePath = os.path.join(workDir, 'zuc', 'decode_code', 'decode_code');
     # templatePath = workDir + '\\sm3_4decode\\sm3_sm4_decode_code\\sm3_sm4_decode_code';
     # '\\sm3_4decode\\sm3_sm4_decode_code\\sm3_sm4_decode_code'
     copyFiles(templatePath, workCopyDir);
+    
+    
+    
+    
 
 # if __name__ == '__main__':
 #     topFileName = 'riscv_core.v';

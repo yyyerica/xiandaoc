@@ -296,7 +296,15 @@ class MainCode(QMainWindow, untitled2.Ui_MainWindow):  # untitled2.Ui_MainWindow
         filepath = "/"+filepath
         print("filename="+filename)
         print("filepath="+filepath)
-        enhanceSecurityTop.use(0, filename, filepath)  # 0选项的生成文件在sm3_4decode/ll3 下
+        filenamelist = ""
+        # 获取listwidget中条目数
+        count = self.list_pre.count()
+        # 遍历listwidget中的内容
+        for i in range(count):
+            filenamelist += self.list_pre.item(i).whatsThis().split("/")[-1]
+            filenamelist += ' '
+        print(filenamelist)
+        enhanceSecurityTop.use(0, 0, filename, filenamelist, filepath)  # 0选项的生成文件在sm3_4decode/ll3 下
         os.chdir(self.basedirpath)
 
         self.clearPost()

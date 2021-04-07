@@ -33,7 +33,8 @@ granodename=1
 nodewide=2
 nodegra=3
 nodetype=4
-nodeuse=5
+nodethree=5
+nodeuse=6
 granodedeepgap=2
 granodetype=3
 deep = 0
@@ -44,6 +45,31 @@ listonereg=[]
 modulelist=[]
 valuesuse=[]
 allvalues=[]
+cdrate=4
+randomrate=0.15
+def xpass(grid): 
+    A=grid         
+    A = [[row[i] for row in A] for i in range(len(A[0]))]
+    xrate=[]
+    for i in range(len(A)):
+        t=[1]*len(A)
+        t[i]=0
+        while(1):
+            tx=t
+            for j in range(len(A)):
+                for k in range(len(A)):
+                    if(t[j]==0 and A[j][k]==1):
+                        t[k]=0
+            if(t==tx):
+                break
+        num=0
+        for j in t:
+            if(j==0):
+                num=num+1
+        num=num/len(t)
+        xrate.append(num)
+    return xrate
+            
 def take2(elem):
     return elem[1]
 #def opertorxy(a)
@@ -128,7 +154,7 @@ class Node(object):
                 for i in allvalues:
                     if(i[nodemodulename]==nowmodulename and i[nodename]==self.name):
                         if(self.__class__.__name__=='Reg'):
-                            i[nodetype]='Reg'
+                            i[nodetype]=str('Reg'+i[nodetype])
                         ex=1
                         break
                 if(ex==0):    
@@ -144,7 +170,8 @@ class Node(object):
                         wi.append(int(str(self.width.lsb)))
                         value.append(wi)
                         value.append([])       
-                        value.append(self.__class__.__name__ )       
+                        value.append(self.__class__.__name__ )
+                        value.append([])       
                     else:
                         value.append(nowmodulename)
                         value.append(self.name)
@@ -153,6 +180,7 @@ class Node(object):
                         value.append(wi)
                         value.append([])
                         value.append(self.__class__.__name__ )   
+                        value.append([])   
                     allvalues.append(value)
             for c in self.children():
                 c.checkvalues(allvalues,buf)
@@ -177,8 +205,23 @@ class Node(object):
 
 
 
-
-
+    def keymodule(self,pr):
+        modulescorelist=modulelist.copy()
+        for i in range(len(modulescorelist)):
+            modulescorelist[i]=[modulescorelist[i],0]
+        for i in allvalues:
+            if(i[nodetype]=='Output' or i[nodetype]=='RegOutput'):
+                name=str(i[nodemodulename]+'+'+i[nodename])
+                for j in pr:
+                    if(j[0]==name):
+                        for k in modulescorelist:
+                            if(k[0]==i[nodemodulename]):
+                                k[1]=k[1]+j[1]
+                                break
+        modulescorelist.sort(key=take2,reverse=True)
+        return modulescorelist
+                         
+ 
             
 
     def checksignals(self, buf=sys.stdout):
@@ -189,6 +232,7 @@ class Node(object):
         ((self.description).children())[0].findinout(buf)
         nowmodulename=topmodulename
         self.description.checkvalues(allvalues, buf)
+        print('bianliang shengcheng over')
         nowmodulename=topmodulename
 
 
@@ -202,12 +246,12 @@ class Node(object):
 
 
         ((self.description).children())[0].checkkeyvalues(self.description,[],allvalues, buf)       
-
+        print('yufa fenxi over')
 
       
        
         for i in allvalues:
-            if(len(i[nodegra])==1 and i[nodetype]!='Reg'):
+            if(len(i[nodegra])==1 and i[nodetype]=='Wire'):
                 cast=[]
                 cast.append([i[nodemodulename],i[nodename]])
                 cast.append([i[nodegra][0][nodemodulename],i[nodegra][0][nodename]])
@@ -235,7 +279,7 @@ class Node(object):
                             k=k+1
 
             self.castatob(allvalues,i[0][nodemodulename],i[1][nodemodulename],i[0][nodename],i[1][nodename])
-
+        print('touying over')
 
 
         for i in allvalues:
@@ -249,49 +293,91 @@ class Node(object):
                   else:
                       k=k+1
                 j=j+1          
-#        for i in allvalues:
-#            if(i[nodegra]==[]):
-#                for j in listonereg:
-#                    i[nodegra].append([j[0],j[1],0,0])             
+           
         num=len(allvalues)
 
 
         for i in  allvalues:   
-            if(i[nodetype]=='Reg' and i[nodewide][0]==0):
+            if(i[nodetype][:2]=='Reg' and i[nodewide][0]==0):
                 listonereg.append([i[nodemodulename],i[nodename]])
 
 
-        self.description.finddontcare()
-        self.description.searchdontcare()
-        for i in allvalues:
-            print(i)
+#        self.description.finddontcare()
+#        self.description.searchdontcare()
+#        for i in allvalues:
+#            print(i)
         DG = nx.DiGraph()
         for i in range(num):
-            for j in allvalues[i][nodegra]:
-                DG.add_weighted_edges_from([(str(allvalues[i][nodemodulename]+'+'+allvalues[i][nodename]),j[granodemodulename]+'+'+j[granodename],j[granodedeepgap]+1)])
+            clist=[]
+            dlist=[]
+            for j in allvalues[i][nodethree]:
+                for k in j[0]:
+                    find=0
+                    for l in clist:
+                        if(l[nodemodulename]==k[nodemodulename] and l[nodename]==k[nodename]):
+                            find=1
+                            l[2]=l[2]+1
+                            break
+                    if(find==0):
+                        clist.append([k[nodemodulename],k[nodename],1])
+                for k in j[1]:
+                    find=0
+                    for l in dlist:
+                        if(l[nodemodulename]==k[nodemodulename] and l[nodename]==k[nodename]):
+                            find=1
+                            l[2]=l[2]+1
+                            break
+                    if(find==0):
+                        dlist.append([k[nodemodulename],k[nodename],1])
+                        break  
+            numc=0
+            for j in clist:
+                numc=numc+j[2] 
+            numd=0
+            for j in dlist:
+                numd=numd+j[2]
+            allscores=0           
+            for j in clist:
+                DG.add_weighted_edges_from([(str(allvalues[i][nodemodulename]+'+'+allvalues[i][nodename]),j[granodemodulename]+'+'+j[granodename],j[2]*(cdrate)*(numd/numc))])
+                allscores=allscores+j[2]*(cdrate)*(numd/numc)
+            for j in dlist:
+                DG.add_weighted_edges_from([(str(allvalues[i][nodemodulename]+'+'+allvalues[i][nodename]),j[granodemodulename]+'+'+j[granodename],j[2])])
+                allscores=allscores+j[2]
+            pscore=(allscores/len(topoutput))*randomrate
+        #    if(allscores!=0):
+         #       for j in topoutput:
+         #           DG.add_weighted_edges_from([(str(allvalues[i][nodemodulename]+'+'+allvalues[i][nodename]),modulelist[0]+'+'+j,pscore)])
+
         personalpr={}
-        pr = nx.pagerank(DG,alpha=0.90,max_iter=100000)
+        pr = nx.pagerank(DG,alpha=0.85,max_iter=100000)
+        print('pagerank over')
+
         listpr=[]
         listvalues=[]
+        listcompare=[]
         for key,value in pr.items():
             x=[key,value]
             listpr.append(x)
             listvalues.append(value)
+            listcompare.append(x)
+                  
         
         listpr.sort(key=take2,reverse=True)
-        for i in listpr:
-            print(i)
+   #     for i in range(50):
+   #         print(listpr[i])
+  #      modulescorelist=self.keymodule(listpr)
+
         listoneregrank=[]
         listprprint=[]
         listoneprint=[]
         listnotuse=[]
         for i in listpr:
             listx = i[0].split('+')
-            for k in allvalues:
-                if(listx[nodemodulename]==k[nodemodulename] and listx[nodename]==k[nodename]):
-                    listprprint.append([i[0],k[nodetype],i[1]])
-                    if(k[nodeuse+1]=='notall'):
-                        listnotuse.append([i[0],k[nodetype],i[1]])             
+            #for k in allvalues:
+            #    if(listx[nodemodulename]==k[nodemodulename] and listx[nodename]==k[nodename]):
+            #        listprprint.append([i[0],k[nodetype],i[1]])
+            #        if(k[nodeuse+1]=='notall'):
+            #            listnotuse.append([i[0],k[nodetype],i[1]])             
             for j in listonereg:
                 if(listx[nodemodulename]==j[nodemodulename] and listx[nodename]==j[nodename]):
                     listoneregrank.append([listx[1],modulelist.index(listx[0]),i[1]])
@@ -316,8 +402,21 @@ class Node(object):
             gnamelist.append(str(i)) 
 #        for i in listonereg:
 #            print(i)
-        
+#         listx=xpass(A)
+#         for i in range(len(listcompare)):
+#             listcompare[i].append(listx[i])
+#         # for i in modulescorelist:
+#         #     print(i)
+#         listcompare.sort(key=take2,reverse=True)
+#        for i in listcompare:
+#            print(i[0])
+#            print(round(i[1],6),round(i[2],6))               
+
         return A,gnamelist,listvalues,listoneregrank
+
+
+        
+
 
     def finddontcare(self):          
         global allvalues
@@ -448,6 +547,13 @@ class Node(object):
                        if(l[nodemodulename]==pnodemodulename and l[nodename]==pnodename):
                            l[nodemodulename]=nnodemodulename
                            l[nodename]=nnodename
+                   for m in k[nodethree]:
+                       for n in m:
+                           for o in n:
+                               
+                               if(o[nodemodulename]==pnodemodulename and o[nodename]==pnodename):
+                                   o[nodemodulename]=nnodemodulename
+                                   o[nodename]=nnodename
                    num=num+1
         for j in castlist:
             if(j[0][0]==pnodemodulename and j[0][1]==pnodename):
@@ -479,6 +585,7 @@ class Node(object):
                for i in self.children():
                    if(i.__class__.__name__!= 'ParamArg'):
                        valueslist=[]
+                       nowinfstack=copy.deepcopy(infstack)
                        i.findvalues(valueslist,buf)
                        for n in valueslist:
                            n[nodemodulename]=storemodulename
@@ -492,11 +599,14 @@ class Node(object):
                                if(k[nodemodulename]==nowmodulename and k[nodename]==str(i.portname)):
                                    for o in valueslist:
                                        k[nodegra].append(o)
+                                   k[nodethree].append([nowinfstack,valueslist])
+
                        if(porttype=='Output'):
                            for l in valueslist:
                                for m in allvalues:
                                    if(m[nodemodulename]==l[nodemodulename] and m[nodename]==l[nodename]):
-                                       m[nodegra].append([nowmodulename,str(i.portname),0,0])    
+                                       m[nodegra].append([nowmodulename,str(i.portname),0,0])
+                                       m[nodethree].append([nowinfstack,[[nowmodulename,str(i.portname),0,0]]])    
                                                              
            nowmodulename= storemodulename
 
@@ -518,6 +628,7 @@ class Node(object):
                 for i in lvalues:
                     if( allvalues[c][nodemodulename]==i[granodemodulename] and allvalues[c][nodename]==i[granodename]):
                       allvalues[c][nodegra]=allvalues[c][nodegra]+rvalues+nowinfstack
+                      allvalues[c][nodethree].append([nowinfstack,rvalues])
 
 
 
@@ -879,11 +990,8 @@ class Decl(Node):
             c=self.children()[i]
             if(c.__class__.__name__ == 'Reg' and c.name==regname):
                 x=Wire(c.name, None, c.signed, c.dimensions, c.value, c.lineno)
-                print(type(self.list))
                 self.list=list(self.list)
-                print(type(self.list))
                 self.list[i]=x
-                print(type(self.list))
                 tuple(self.list)
 
 

@@ -65,18 +65,18 @@ def modifyTamplate(templateName, bakFile, name3, name4, num1, clkname, rstname):
             for line in lines:
                 point = point + 1;
                 # print(line);
-                if "sm4_input_decode" in line and "assign" in line: #将sm4输入信号改为对应的读取数据的信号
-                     strline = "\tassign sm4_input_decode = " + name3 + ";\n";
+                if "input_data_for_decode" in line and "assign" in line: #将sm4输入信号改为对应的读取数据的信号
+                     strline = "\tassign input_data_for_decode = " + name3 + ";\n";
                      print(strline);
                      line = line.replace(line, strline);
                      CFile.write(line);
-                elif "sm4_input_encode" in line and "assign" in line: #将sm4d输入信号改为对应的读取数据的信号
-                     strline = "\tassign sm4_input_encode = " + name4 + ";\n";
+                elif "input_data_for_encode" in line and "assign" in line: #将sm4d输入信号改为对应的读取数据的信号
+                     strline = "\tassign input_data_for_encode = " + name4 + ";\n";
                      print(strline);
                      line = line.replace(line, strline);
                      CFile.write(line);
                 # wire [31:0]    temp_result;
-                elif "result_decode" in line and "wire" in line:
+                elif "out_data_decode" in line and "wire" in line:
                     print('htidshafasdjfasjdfhasdjkhfaskjhfajsdhfkjahsdkjfa');
                     strline = line;
                     tempStr = strline.split("[");
@@ -86,7 +86,7 @@ def modifyTamplate(templateName, bakFile, name3, name4, num1, clkname, rstname):
                     print(line);
                     CFile.write(line);
                 # assigh temp_result = result_decode[31:0];
-                elif "result_decode" in line and "assign" in line:
+                elif "out_data_decode" in line and "assign" in line:
                     print('dsafsdfasdfas            dfsderwerd     ');
                     strline = line;
                     tempStr = strline.split("[");
@@ -282,8 +282,21 @@ def rstPort(fileName):
         print(count)
     return rstName;
 
+def copyvFiles(templatePath, ProjectDir,  DestPath):
+    hasDir(templatePath, DestPath);
+    print('this is copyvfille', templatePath, ProjectDir);
+    s2 = ProjectDir.split(' ')
+    print(s2)
+    for file_name in s2:
+        full_file_name = os.path.join(templatePath, file_name);
+        if os.path.isfile(full_file_name):
+            shutil.copy(full_file_name, DestPath);#拷贝
+#            print("copy file" + full_file_name);
+            
+
+
 #总体函数
-def enhanceInOutSecurity(topFileName, destDir):
+def enhanceInOutSecurity(topFileName, projectDir, destDir):
     # print('this is my main!')
     workDir = os.getcwd()
     # print(workDir  +'\n' +destDir)
@@ -291,9 +304,9 @@ def enhanceInOutSecurity(topFileName, destDir):
     # topFile = destDir + '/' + topFileName
     topFilName1 = topFileName.split(".")
     # bakFile = destDir + '/' + topFilName1[0] + '_1.v'
-    workCopyDir = os.path.join(workDir, 'sm3_4decode', 'll3');
-    bakFile = os.path.join(workDir, 'sm3_4decode', 'll3', topFileName)
-    bakFile1 = os.path.join(workDir, 'sm3_4decode', 'll3', topFilName1[0])
+    workCopyDir = os.path.join(workDir, 'zuc', 'll3');
+    bakFile = os.path.join(workDir, 'zuc', 'll3', topFileName)
+    bakFile1 = os.path.join(workDir, 'zuc', 'll3', topFilName1[0])
     bakFile1 = bakFile1 + '_1.v'
      
     # print(bakFile    + '\n' +bakFile1 )
@@ -303,9 +316,12 @@ def enhanceInOutSecurity(topFileName, destDir):
     # bakFile = workCopyDir + '\\' + topFileName;
     # print(bakFile);
     
+   
     hasFile(bakFile1, bakFile);
     bakFileFunction(topFile, bakFile);
     bakFileFunction(topFile, bakFile1);
+    
+    copyvFiles(destDir, projectDir, workCopyDir)
          
     name1 = inputPort(bakFile);
     print(name1);
@@ -317,18 +333,18 @@ def enhanceInOutSecurity(topFileName, destDir):
     clkname = clkPort(bakFile);
     print(clkname, rstname);
     # templateName = workDir + '\\sm3_4decode\\sm3_sm4_encode_decode_code\\sm34_encode_decode.v';
-    templateName = os.path.join(workDir,'sm3_4decode','sm3_sm4_encode_decode_code','sm34_encode_decode.v')
+    templateName = os.path.join(workDir,'zuc','encode_decode_code','zuc_encode_decode.v')
     print('starting read file and modify!');
     readFile(bakFile, bakFile1, name1, name2, templateName, num1, clkname, rstname);
     print('Modify finish copy file to dest Project!');
     # templatePath = workDir + '\\sm3_4decode\\sm3_sm4_encode_decode_code\\sm3_sm4_encode_decode_code';
-    templatePath = os.path.join(workDir, 'sm3_4decode', 'sm3_sm4_encode_decode_code', 'sm3_sm4_encode_decode_code')
+    templatePath = os.path.join(workDir, 'zuc', 'encode_decode_code', 'encode_decode_code')
     copyFiles(templatePath, workCopyDir);
 
-# if __name__ == '__main__':
-#     topFileName = 'riscv_core.v';
-#     destDir = 'E:\python-project\python-changeFile\sm3_4decode\ll3';#####
-#     enhanceInOutSecurity(topFileName, destDir);
+if __name__ == '__main__':
+    topFileName = 'riscv_core.v';
+    destDir = 'E:\python-project\python_riscv-light-v1\zuc\ll3';#####
+    enhanceInOutSecurity(topFileName, destDir);
  
     
  

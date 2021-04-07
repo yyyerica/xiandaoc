@@ -42,7 +42,8 @@ def modifyFile(fileName, copyFile, name2, templateContent):
                 elif name2 in line and "output" not in line and "wire" not in line:
                     newline = line;
                     strline = newline.split("(");
-                    line = line.replace(line, strline[0] + " (result_out)\n");
+#                    line = line.replace(line, strline[0] + " (result_out)\n");
+                    line = line.replace(line, strline[0] + " ( "+ name2 + " )\n");
                     print(line);
                     CFile.write(line); 
                 else:
@@ -59,8 +60,8 @@ def modifyTamplate(templateName, bakFile, num1, name3, clkname, rstname):
             for line in lines:
                 point = point + 1;
                 # print(line);
-                if "sm4_input" in line and "assign" in line: #将sm4输入信号改为对应的读取数据的信号
-                     strline = "\tassign sm4_input = " + name3 + ";\n";
+                if "input_data" in line and "assign" in line: #将sm4输入信号改为对应的读取数据的信号
+                     strline = "\tassign input_data = " + name3 + ";\n";
                      print(strline);
                      line = line.replace(line, strline);
                      CFile.write(line);
@@ -234,9 +235,21 @@ def rstPort(fileName):
                     print(test);
         print(count)
     return rstName;
-          
+ 
+def copyvFiles(templatePath, ProjectDir,  DestPath):
+    hasDir(templatePath, DestPath);
+    print('this is copyvfille', templatePath, ProjectDir);
+    s2 = ProjectDir.split(' ')
+    print(s2)
+    for file_name in s2:
+        full_file_name = os.path.join(templatePath, file_name);
+        if os.path.isfile(full_file_name):
+            shutil.copy(full_file_name, DestPath);#拷贝
+#            print("copy file" + full_file_name);
+            
+ 
 #总体函数
-def enhanceOutputSecurity(topFileName, destDir):
+def enhanceOutputSecurity(topFileName, projectDir, destDir):
     print('this is my main!');
     workDir = os.getcwd();
     print(workDir  +'\n' +destDir);
@@ -244,18 +257,20 @@ def enhanceOutputSecurity(topFileName, destDir):
     topFile = destDir + '\\' + topFileName;
     topFilName1 = topFileName.split(".");
     # bakFile = destDir + '\\' + topFilName1[0] + '_1.v' ;
-    # workCopyDir = workDir + '\\sm3_4decode\\ll2';
+    # workCopyDir = workDir + '\\zuc\\ll2';
     # bakFile1 = workCopyDir + '\\' + topFilName1[0] + '_1.v' ;
     # bakFile = workCopyDir + '\\' + topFileName;
     # print("fdsfasdfa " + bakFile);
-    workCopyDir = os.path.join(workDir, 'sm3_4decode', 'll2');
-    bakFile = os.path.join(workDir, 'sm3_4decode', 'll2', topFileName)
-    bakFile1 = os.path.join(workDir, 'sm3_4decode', 'll2', topFilName1[0])
+    workCopyDir = os.path.join(workDir, 'zuc', 'll2');
+    bakFile = os.path.join(workDir, 'zuc', 'll2', topFileName)
+    bakFile1 = os.path.join(workDir, 'zuc', 'll2', topFilName1[0])
     bakFile1 = bakFile1 + '_1.v'
     
     hasFile(bakFile1, bakFile);
     bakFileFunction(topFile, bakFile);
     bakFileFunction(topFile, bakFile1);
+    
+    copyvFiles(destDir, projectDir, workCopyDir)
 
     name1 = outputPort(bakFile);
     print(name1);
@@ -264,13 +279,13 @@ def enhanceOutputSecurity(topFileName, destDir):
     rstname = rstPort(bakFile);
     clkname = clkPort(bakFile);
     print(clkname, rstname);
-    # templateName = workDir + '\\sm3_4decode\\sm3_sm4_encode_code\\sm34_encode.v';
-    templateName = os.path.join(workDir, 'sm3_4decode', 'sm3_sm4_encode_code', 'sm34_encode.v');
+    # templateName = workDir + '\\zuc\\encode_code\\sm34_encode.v';
+    templateName = os.path.join(workDir, 'zuc', 'encode_code', 'zuc_encode.v');
     print('starting read file and modify!');
     readFile(bakFile, bakFile1, name1, templateName, num1, clkname, rstname);
     print('Modify finish copy file to dest Project!');
-    templatePath = os.path.join(workDir, 'sm3_4decode', 'sm3_sm4_encode_code', 'sm3_sm4_encode_code');
-    # templatePath = workDir + '\\sm3_4decode\\sm3_sm4_encode_code\\sm3_sm4_encode_code';
+    templatePath = os.path.join(workDir, 'zuc', 'encode_code', 'encode_code');
+    # templatePath = workDir + '\\zuc\\encode_code\\encode_code';
     copyFiles(templatePath, workCopyDir);
 
 # if __name__ == '__main__':
