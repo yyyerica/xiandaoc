@@ -298,7 +298,7 @@ class Node(object):
 
 
         for i in  allvalues:   
-            if(i[nodetype][:2]=='Reg' and i[nodewide][0]==0):
+            if(i[nodetype]=='Reg' and i[nodewide][0]==0):
                 listonereg.append([i[nodemodulename],i[nodename]])
 
 
@@ -365,7 +365,7 @@ class Node(object):
         listpr.sort(key=take2,reverse=True)
    #     for i in range(50):
    #         print(listpr[i])
-  #      modulescorelist=self.keymodule(listpr)
+        modulescorelist=self.keymodule(listpr)
 
         listoneregrank=[]
         listprprint=[]
@@ -402,12 +402,12 @@ class Node(object):
             gnamelist.append(str(i)) 
 #        for i in listonereg:
 #            print(i)
-#         listx=xpass(A)
-#         for i in range(len(listcompare)):
-#             listcompare[i].append(listx[i])
-#         # for i in modulescorelist:
-#         #     print(i)
-#         listcompare.sort(key=take2,reverse=True)
+ #       listx=xpass(A)
+ #       for i in range(len(listcompare)):
+ #           listcompare[i].append(listx[i])
+        for i in modulescorelist:
+            print(i)
+ #       listcompare.sort(key=take2,reverse=True)
 #        for i in listcompare:
 #            print(i[0])
 #            print(round(i[1],6),round(i[2],6))               

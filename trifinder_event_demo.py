@@ -241,6 +241,7 @@ def label(x, y, text):
 
 
 def draw(link_matrix, label_list, value_list):
+    plt.close()  # 先关闭上一个再重新打开
     fig = plt.figure("关键节点展示图", figsize=(7, 7))
     fig.patch.set_facecolor((0.2,0.2,0.2,0.2))
     # 点的个数

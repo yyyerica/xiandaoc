@@ -41,14 +41,14 @@
          <number>3</number>
         </property>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_6" stretch="0,6">
+         <layout class="QVBoxLayout" name="verticalLayout_6" stretch="0,1">
           <property name="spacing">
            <number>0</number>
           </property>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0">
             <property name="spacing">
-             <number>0</number>
+             <number>1</number>
             </property>
             <property name="leftMargin">
              <number>0</number>
@@ -192,7 +192,7 @@
                 </widget>
                </item>
                <item>
-                <spacer name="horizontalSpacer_2">
+                <spacer name="horizontalSpacer">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
@@ -207,20 +207,93 @@
               </layout>
              </widget>
             </item>
+            <item>
+             <widget class="QLabel" name="label_4">
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
+              </property>
+              <property name="text">
+               <string>顶层文件</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
            </layout>
           </item>
           <item>
-           <widget class="QListWidget" name="list_pre">
-            <property name="focusPolicy">
-             <enum>Qt::NoFocus</enum>
+           <layout class="QHBoxLayout" name="horizontalLayout_14" stretch="0,0,1">
+            <property name="spacing">
+             <number>0</number>
             </property>
-            <property name="styleSheet">
-             <string notr="true">background:rgb(255, 255, 215)</string>
+            <property name="sizeConstraint">
+             <enum>QLayout::SetMinimumSize</enum>
             </property>
-            <property name="selectionBehavior">
-             <enum>QAbstractItemView::SelectItems</enum>
-            </property>
-           </widget>
+            <item>
+             <widget class="QScrollBar" name="verticalScrollBar">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QListWidget" name="list_pre">
+              <property name="focusPolicy">
+               <enum>Qt::NoFocus</enum>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">background:rgb(255, 255, 215)</string>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::NoFrame</enum>
+              </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QAbstractScrollArea::AdjustIgnored</enum>
+              </property>
+              <property name="autoScroll">
+               <bool>true</bool>
+              </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectItems</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QListWidget" name="list_pre_top">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="focusPolicy">
+               <enum>Qt::NoFocus</enum>
+              </property>
+              <property name="layoutDirection">
+               <enum>Qt::RightToLeft</enum>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">background:rgb(255, 255, 215)</string>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::NoFrame</enum>
+              </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QAbstractScrollArea::AdjustIgnored</enum>
+              </property>
+              <property name="autoScroll">
+               <bool>true</bool>
+              </property>
+              <property name="autoScrollMargin">
+               <number>16</number>
+              </property>
+              <property name="showDropIndicator" stdset="0">
+               <bool>true</bool>
+              </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectItems</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>
@@ -238,14 +311,14 @@ max-height : 3px;
          </widget>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0">
+         <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,1">
           <property name="spacing">
            <number>0</number>
           </property>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0">
             <property name="spacing">
-             <number>0</number>
+             <number>1</number>
             </property>
             <property name="leftMargin">
              <number>0</number>
@@ -350,7 +423,7 @@ max-height : 3px;
                 </widget>
                </item>
                <item>
-                <spacer name="horizontalSpacer_3">
+                <spacer name="horizontalSpacer_2">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
@@ -365,17 +438,78 @@ max-height : 3px;
               </layout>
              </widget>
             </item>
+            <item>
+             <widget class="QLabel" name="label_5">
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
+              </property>
+              <property name="text">
+               <string>顶层文件</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
            </layout>
           </item>
           <item>
-           <widget class="QListWidget" name="list_post">
-            <property name="focusPolicy">
-             <enum>Qt::NoFocus</enum>
+           <layout class="QHBoxLayout" name="horizontalLayout_15" stretch="0,0,1">
+            <property name="spacing">
+             <number>0</number>
             </property>
-            <property name="styleSheet">
-             <string notr="true">background:rgb(255, 255, 215)</string>
+            <property name="sizeConstraint">
+             <enum>QLayout::SetMinimumSize</enum>
             </property>
-           </widget>
+            <item>
+             <widget class="QScrollBar" name="verticalScrollBar_2">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QListWidget" name="list_post">
+              <property name="focusPolicy">
+               <enum>Qt::NoFocus</enum>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">background:rgb(255, 255, 215)</string>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::NoFrame</enum>
+              </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QAbstractScrollArea::AdjustIgnored</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QListWidget" name="list_post_top">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="focusPolicy">
+               <enum>Qt::NoFocus</enum>
+              </property>
+              <property name="layoutDirection">
+               <enum>Qt::RightToLeft</enum>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">background:rgb(255, 255, 215)</string>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::NoFrame</enum>
+              </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QAbstractScrollArea::AdjustIgnored</enum>
+              </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectItems</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>
@@ -624,8 +758,8 @@ border-radius:15px;</string>
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>42</height>
+                   <width>37</width>
+                   <height>60</height>
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -668,8 +802,8 @@ border-radius:15px;</string>
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>42</height>
+                   <width>37</width>
+                   <height>60</height>
                   </rect>
                  </property>
                  <property name="sizePolicy">

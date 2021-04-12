@@ -186,7 +186,10 @@ begin
     wire        itlb_hit_w;
     wire        dtlb_hit_w;
 
-    reg         dtlb_req_q;
+                           
+wire dtlb_req_q;
+reg [3:0]vote3_dtlb_req_q;
+vote3 vote3module_dtlb_req_q(.r3(vote3_dtlb_req_q),.r(dtlb_req_q));
 
     // Global enable
     wire        vm_enable_w = satp_i[`SATP_MODE_R];
@@ -223,7 +226,7 @@ begin
         pte_addr_q  <= 32'b0;
         pte_entry_q <= 32'b0;
         virt_addr_q <= 32'b0;
-        dtlb_req_q  <= 1'b0;
+        vote3_dtlb_req_q <= {3{ 1'b0}};
         state_q     <= STATE_IDLE;
     end
     else
@@ -233,7 +236,7 @@ begin
         begin
             pte_addr_q  <= ptbr_w + {20'b0, request_addr_w[31:22], 2'b0};
             virt_addr_q <= request_addr_w;
-            dtlb_req_q  <= dtlb_miss_w;
+            vote3_dtlb_req_q <= {3{ dtlb_miss_w}};
 
             state_q     <= STATE_LEVEL_FIRST;
         end
@@ -313,10 +316,13 @@ begin
     // TLB address matched (even on page fault)
     assign itlb_hit_w   = fetch_in_rd_i & itlb_valid_q & (itlb_va_addr_q == fetch_in_pc_i[31:12]);
 
-    reg pc_fault_r;
+                   
+wire pc_fault_r;
+reg [3:0]vote3_pc_fault_r;
+vote3 vote3module_pc_fault_r(.r3(vote3_pc_fault_r),.r(pc_fault_r));
     always @ *
     begin
-        pc_fault_r = 1'b0;
+        vote3_pc_fault_r = {3{ 1'b0}};
 
         if (vm_i_enable_w && itlb_hit_w)
         begin
@@ -325,14 +331,14 @@ begin
             begin
                 // User page, supervisor cannot execute
                 if (itlb_entry_q[`PAGE_USER])
-                    pc_fault_r = 1'b1;
+                    vote3_pc_fault_r = {3{ 1'b1}};
                 // Check exec permissions
                 else
-                    pc_fault_r = ~itlb_entry_q[`PAGE_EXEC];
+                    vote3_pc_fault_r = {3{ ~itlb_entry_q[`PAGE_EXEC]}};
             end
             // User mode
             else
-                pc_fault_r = (~itlb_entry_q[`PAGE_EXEC]) | (~itlb_entry_q[`PAGE_USER]);
+                vote3_pc_fault_r = {3{ (~itlb_entry_q[`PAGE_EXEC]) | (~itlb_entry_q[`PAGE_USER])}};
         end
     end
 
@@ -358,17 +364,20 @@ begin
     //-----------------------------------------------------------------
     // DMMU TLB
     //-----------------------------------------------------------------
-    reg         dtlb_valid_q;
+                             
+wire dtlb_valid_q;
+reg [3:0]vote3_dtlb_valid_q;
+vote3 vote3module_dtlb_valid_q(.r3(vote3_dtlb_valid_q),.r(dtlb_valid_q));
     reg [31:12] dtlb_va_addr_q;
     reg [31:0]  dtlb_entry_q;
 
     always @ (posedge clk_i or posedge rst_i)
     if (rst_i)
-        dtlb_valid_q <= 1'b0;
+        vote3_dtlb_valid_q <= {3{ 1'b0}};
     else if (flush_i)
-        dtlb_valid_q <= 1'b0;
+        vote3_dtlb_valid_q <= {3{ 1'b0}};
     else if (state_q == STATE_UPDATE && dtlb_req_q)
-        dtlb_valid_q <= 1'b1;
+        vote3_dtlb_valid_q <= {3{ 1'b1}};
 
     always @ (posedge clk_i or posedge rst_i)
     if (rst_i)
@@ -385,10 +394,13 @@ begin
     // TLB address matched (even on page fault)
     assign dtlb_hit_w   = dtlb_valid_q & (dtlb_va_addr_q == lsu_addr_w[31:12]);
 
-    reg load_fault_r;
+                     
+wire load_fault_r;
+reg [3:0]vote3_load_fault_r;
+vote3 vote3module_load_fault_r(.r3(vote3_load_fault_r),.r(load_fault_r));
     always @ *
     begin
-        load_fault_r = 1'b0;
+        vote3_load_fault_r = {3{ 1'b0}};
 
         if (vm_d_enable_w && load_w && dtlb_hit_w)
         begin
@@ -397,21 +409,24 @@ begin
             begin
                 // User page, supervisor user mode not enabled
                 if (dtlb_entry_q[`PAGE_USER] && !sum_i)
-                    load_fault_r = 1'b1;
+                    vote3_load_fault_r = {3{ 1'b1}};
                 // Check exec permissions
                 else
-                    load_fault_r = ~(dtlb_entry_q[`PAGE_READ] | (mxr_i & dtlb_entry_q[`PAGE_EXEC]));
+                    vote3_load_fault_r = {3{ ~(dtlb_entry_q[`PAGE_READ] | (mxr_i & dtlb_entry_q[`PAGE_EXEC]))}};
             end
             // User mode
             else
-                load_fault_r = (~dtlb_entry_q[`PAGE_READ]) | (~dtlb_entry_q[`PAGE_USER]);
+                vote3_load_fault_r = {3{ (~dtlb_entry_q[`PAGE_READ]) | (~dtlb_entry_q[`PAGE_USER])}};
         end
     end
 
-    reg store_fault_r;
+                      
+wire store_fault_r;
+reg [3:0]vote3_store_fault_r;
+vote3 vote3module_store_fault_r(.r3(vote3_store_fault_r),.r(store_fault_r));
     always @ *
     begin
-        store_fault_r = 1'b0;
+        vote3_store_fault_r = {3{ 1'b0}};
 
         if (vm_d_enable_w && (|store_w) && dtlb_hit_w)
         begin
@@ -420,14 +435,14 @@ begin
             begin
                 // User page, supervisor user mode not enabled
                 if (dtlb_entry_q[`PAGE_USER] && !sum_i)
-                    store_fault_r = 1'b1;
+                    vote3_store_fault_r = {3{ 1'b1}};
                 // Check exec permissions
                 else
-                    store_fault_r = (~dtlb_entry_q[`PAGE_READ]) | (~dtlb_entry_q[`PAGE_WRITE]);
+                    vote3_store_fault_r = {3{ (~dtlb_entry_q[`PAGE_READ]) | (~dtlb_entry_q[`PAGE_WRITE])}};
             end
             // User mode
             else
-                store_fault_r = (~dtlb_entry_q[`PAGE_READ]) | (~dtlb_entry_q[`PAGE_WRITE]) | (~dtlb_entry_q[`PAGE_USER]);
+                vote3_store_fault_r = {3{ (~dtlb_entry_q[`PAGE_READ]) | (~dtlb_entry_q[`PAGE_WRITE]) | (~dtlb_entry_q[`PAGE_USER])}};
         end
     end
 
@@ -498,23 +513,26 @@ begin
     //-----------------------------------------------------------------
     // Request Muxing
     //-----------------------------------------------------------------
-    reg  read_hold_q;
+                     
+wire read_hold_q;
+reg [3:0]vote3_read_hold_q;
+vote3 vote3module_read_hold_q(.r3(vote3_read_hold_q),.r(read_hold_q));
     reg  src_mmu_q;
     wire src_mmu_w = read_hold_q ? src_mmu_q : mem_req_q;
 
     always @ (posedge clk_i or posedge rst_i)
     if (rst_i)
     begin
-        read_hold_q  <= 1'b0;
+        vote3_read_hold_q <= {3{ 1'b0}};
         src_mmu_q    <= 1'b0;
     end
     else if ((lsu_out_rd_o || (|lsu_out_wr_o)) && !lsu_out_accept_i)
     begin
-        read_hold_q  <= 1'b1;
+        vote3_read_hold_q <= {3{ 1'b1}};
         src_mmu_q    <= src_mmu_w;
     end
     else if (lsu_out_accept_i)
-        read_hold_q  <= 1'b0;
+        vote3_read_hold_q <= {3{ 1'b0}};
 
     assign mmu_accept_w         = src_mmu_w  & lsu_out_accept_i;
     assign cpu_accept_w         = ~src_mmu_w & lsu_out_accept_i;

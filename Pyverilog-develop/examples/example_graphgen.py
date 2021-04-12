@@ -12,7 +12,7 @@ from __future__ import absolute_import
 from __future__ import print_function
 import sys
 import os
-import pygraphviz as pgv
+# import pygraphviz as pgv
 from optparse import OptionParser
 
 # the next line can be removed after installation

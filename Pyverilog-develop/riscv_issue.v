@@ -202,8 +202,14 @@ wire       issue_invalid_w  = fetch_instr_invalid_i;
 //------------------------------------------------------------- 
 wire        pipe_squash_e1_e2_w;
 
-reg         opcode_issue_r;
-reg         opcode_accept_r;
+                           
+wire opcode_issue_r;
+reg [3:0]vote3_opcode_issue_r;
+vote3 vote3module_opcode_issue_r(.r3(vote3_opcode_issue_r),.r(opcode_issue_r));
+                            
+wire opcode_accept_r;
+reg [3:0]vote3_opcode_accept_r;
+vote3 vote3module_opcode_accept_r(.r3(vote3_opcode_accept_r),.r(opcode_accept_r));
 wire        pipe_stall_raw_w;
 
 wire        pipe_load_e1_w;
@@ -332,32 +338,38 @@ assign csr_writeback_exception_addr_o = pipe_result_wb_w;
 //-------------------------------------------------------------
 // Blocking events (division, CSR unit access)
 //-------------------------------------------------------------
-reg div_pending_q;
-reg csr_pending_q;
+                  
+wire div_pending_q;
+reg [3:0]vote3_div_pending_q;
+vote3 vote3module_div_pending_q(.r3(vote3_div_pending_q),.r(div_pending_q));
+                  
+wire csr_pending_q;
+reg [3:0]vote3_csr_pending_q;
+vote3 vote3module_csr_pending_q(.r3(vote3_csr_pending_q),.r(csr_pending_q));
 
 // Division operations take 2 - 34 cycles and stall
 // the pipeline (complete out-of-pipe) until completed.
 always @ (posedge clk_i or posedge rst_i)
 if (rst_i)
-    div_pending_q <= 1'b0;
+    vote3_div_pending_q <= {3{ 1'b0}};
 else if (pipe_squash_e1_e2_w)
-    div_pending_q <= 1'b0;
+    vote3_div_pending_q <= {3{ 1'b0}};
 else if (div_opcode_valid_o && issue_div_w)
-    div_pending_q <= 1'b1;
+    vote3_div_pending_q <= {3{ 1'b1}};
 else if (writeback_div_valid_i)
-    div_pending_q <= 1'b0;
+    vote3_div_pending_q <= {3{ 1'b0}};
 
 // CSR operations are infrequent - avoid any complications of pipelining them.
 // These only take a 2-3 cycles anyway and may result in a pipe flush (e.g. ecall, ebreak..).
 always @ (posedge clk_i or posedge rst_i)
 if (rst_i)
-    csr_pending_q <= 1'b0;
+    vote3_csr_pending_q <= {3{ 1'b0}};
 else if (pipe_squash_e1_e2_w)
-    csr_pending_q <= 1'b0;
+    vote3_csr_pending_q <= {3{ 1'b0}};
 else if (csr_opcode_valid_o && issue_csr_w)
-    csr_pending_q <= 1'b1;
+    vote3_csr_pending_q <= {3{ 1'b1}};
 else if (pipe_csr_wb_w)
-    csr_pending_q <= 1'b0;
+    vote3_csr_pending_q <= {3{ 1'b0}};
 
 assign squash_w = pipe_squash_e1_e2_w;
 
@@ -368,8 +380,8 @@ reg [31:0] scoreboard_r;
 
 always @ *
 begin
-    opcode_issue_r     = 1'b0;
-    opcode_accept_r    = 1'b0;
+    vote3_opcode_issue_r = {3{ 1'b0}};
+    vote3_opcode_accept_r = {3{ 1'b0}};
     scoreboard_r       = 32'b0;
 
     // Execution units with >= 2 cycle latency
@@ -401,8 +413,8 @@ begin
           scoreboard_r[issue_rb_idx_w] ||
           scoreboard_r[issue_rd_idx_w]))
     begin
-        opcode_issue_r  = 1'b1;
-        opcode_accept_r = 1'b1;
+        vote3_opcode_issue_r = {3{ 1'b1}};
+        vote3_opcode_accept_r = {3{ 1'b1}};
 
         if (opcode_accept_r && issue_sb_alloc_w && (|issue_rd_idx_w))
             scoreboard_r[issue_rd_idx_w] = 1'b1;

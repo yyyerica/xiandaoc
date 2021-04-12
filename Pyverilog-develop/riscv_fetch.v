@@ -96,7 +96,10 @@ module riscv_fetch
 //-------------------------------------------------------------
 // Registers / Wires
 //-------------------------------------------------------------
-reg         active_q;
+                     
+wire active_q;
+reg [3:0]vote3_active_q;
+vote3 vote3module_active_q(.r3(vote3_active_q),.r(active_q));
 
 wire        icache_busy_w;
 wire        stall_w       = !fetch_accept_i || icache_busy_w || !icache_accept_i;
@@ -104,26 +107,29 @@ wire        stall_w       = !fetch_accept_i || icache_busy_w || !icache_accept_i
 //-------------------------------------------------------------
 // Buffered branch
 //-------------------------------------------------------------
-reg         branch_q;
+                     
+wire branch_q;
+reg [3:0]vote3_branch_q;
+vote3 vote3module_branch_q(.r3(vote3_branch_q),.r(branch_q));
 reg [31:0]  branch_pc_q;
 reg [1:0]   branch_priv_q;
 
 always @ (posedge clk_i or posedge rst_i)
 if (rst_i)
 begin
-    branch_q       <= 1'b0;
+    vote3_branch_q <= {3{ 1'b0}};
     branch_pc_q    <= 32'b0;
     branch_priv_q  <= `PRIV_MACHINE;
 end
 else if (branch_request_i)
 begin
-    branch_q       <= 1'b1;
+    vote3_branch_q <= {3{ 1'b1}};
     branch_pc_q    <= branch_pc_i;
     branch_priv_q  <= branch_priv_i;
 end
 else if (icache_rd_o && icache_accept_i)
 begin
-    branch_q       <= 1'b0;
+    vote3_branch_q <= {3{ 1'b0}};
     branch_pc_q    <= 32'b0;
 end
 
@@ -138,43 +144,52 @@ assign squash_decode_o    = branch_request_i;
 //-------------------------------------------------------------
 always @ (posedge clk_i or posedge rst_i)
 if (rst_i)
-    active_q    <= 1'b0;
+    vote3_active_q <= {3{ 1'b0}};
 else if (branch_w && ~stall_w)
-    active_q    <= 1'b1;
+    vote3_active_q <= {3{ 1'b1}};
 
 //-------------------------------------------------------------
 // Stall flag
 //-------------------------------------------------------------
-reg stall_q;
+            
+wire stall_q;
+reg [3:0]vote3_stall_q;
+vote3 vote3module_stall_q(.r3(vote3_stall_q),.r(stall_q));
 
 always @ (posedge clk_i or posedge rst_i)
 if (rst_i)
-    stall_q    <= 1'b0;
+    vote3_stall_q <= {3{ 1'b0}};
 else
-    stall_q    <= stall_w;
+    vote3_stall_q <= {3{ stall_w}};
 
 //-------------------------------------------------------------
 // Request tracking
 //-------------------------------------------------------------
-reg icache_fetch_q;
-reg icache_invalidate_q;
+                   
+wire icache_fetch_q;
+reg [3:0]vote3_icache_fetch_q;
+vote3 vote3module_icache_fetch_q(.r3(vote3_icache_fetch_q),.r(icache_fetch_q));
+                        
+wire icache_invalidate_q;
+reg [3:0]vote3_icache_invalidate_q;
+vote3 vote3module_icache_invalidate_q(.r3(vote3_icache_invalidate_q),.r(icache_invalidate_q));
 
 // ICACHE fetch tracking
 always @ (posedge clk_i or posedge rst_i)
 if (rst_i)
-    icache_fetch_q <= 1'b0;
+    vote3_icache_fetch_q <= {3{ 1'b0}};
 else if (icache_rd_o && icache_accept_i)
-    icache_fetch_q <= 1'b1;
+    vote3_icache_fetch_q <= {3{ 1'b1}};
 else if (icache_valid_i)
-    icache_fetch_q <= 1'b0;
+    vote3_icache_fetch_q <= {3{ 1'b0}};
 
 always @ (posedge clk_i or posedge rst_i)
 if (rst_i)
-    icache_invalidate_q <= 1'b0;
+    vote3_icache_invalidate_q <= {3{ 1'b0}};
 else if (icache_invalidate_o && !icache_accept_i)
-    icache_invalidate_q <= 1'b1;
+    vote3_icache_invalidate_q <= {3{ 1'b1}};
 else
-    icache_invalidate_q <= 1'b0;
+    vote3_icache_invalidate_q <= {3{ 1'b0}};
 
 //-------------------------------------------------------------
 // PC
@@ -197,7 +212,10 @@ else if (!stall_w)
     pc_f_q  <= {icache_pc_w[31:2],2'b0} + 32'd4;
 
 reg [1:0] priv_f_q;
-reg       branch_d_q;
+                     
+wire branch_d_q;
+reg [3:0]vote3_branch_d_q;
+vote3 vote3module_branch_d_q(.r3(vote3_branch_d_q),.r(branch_d_q));
 
 always @ (posedge clk_i or posedge rst_i)
 if (rst_i)
@@ -208,13 +226,13 @@ else if (branch_w && ~stall_w)
 
 always @ (posedge clk_i or posedge rst_i)
 if (rst_i)
-    branch_d_q  <= 1'b0;
+    vote3_branch_d_q <= {3{ 1'b0}};
 // Branch request
 else if (branch_w && ~stall_w)
-    branch_d_q  <= 1'b1;
+    vote3_branch_d_q <= {3{ 1'b1}};
 // NPC
 else if (!stall_w)
-    branch_d_q  <= 1'b0;
+    vote3_branch_d_q <= {3{ 1'b0}};
 
 assign icache_pc_w       = pc_f_q;
 assign icache_priv_w     = priv_f_q;
@@ -242,23 +260,26 @@ assign icache_busy_w       =  icache_fetch_q && !icache_valid_i;
 // Response Buffer
 //-------------------------------------------------------------
 reg [65:0]  skid_buffer_q;
-reg         skid_valid_q;
+                         
+wire skid_valid_q;
+reg [3:0]vote3_skid_valid_q;
+vote3 vote3module_skid_valid_q(.r3(vote3_skid_valid_q),.r(skid_valid_q));
 
 always @ (posedge clk_i or posedge rst_i)
 if (rst_i)
 begin
     skid_buffer_q  <= 66'b0;
-    skid_valid_q   <= 1'b0;
+    vote3_skid_valid_q <= {3{ 1'b0}};
 end 
 // Instruction output back-pressured - hold in skid buffer
 else if (fetch_valid_o && !fetch_accept_i)
 begin
-    skid_valid_q  <= 1'b1;
+    vote3_skid_valid_q <= {3{ 1'b1}};
     skid_buffer_q <= {fetch_fault_page_o, fetch_fault_fetch_o, fetch_pc_o, fetch_instr_o};
 end
 else
 begin
-    skid_valid_q  <= 1'b0;
+    vote3_skid_valid_q <= {3{ 1'b0}};
     skid_buffer_q <= 66'b0;
 end
 

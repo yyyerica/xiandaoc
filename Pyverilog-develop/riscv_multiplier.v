@@ -76,7 +76,10 @@ reg  [31:0]  result_e3_q;
 
 reg [32:0]   operand_a_e1_q;
 reg [32:0]   operand_b_e1_q;
-reg          mulhi_sel_e1_q;
+                            
+wire mulhi_sel_e1_q;
+reg [3:0]vote3_mulhi_sel_e1_q;
+vote3 vote3module_mulhi_sel_e1_q(.r3(vote3_mulhi_sel_e1_q),.r(mulhi_sel_e1_q));
 
 //-------------------------------------------------------------
 // Multiplier
@@ -119,7 +122,7 @@ if (rst_i)
 begin
     operand_a_e1_q <= 33'b0;
     operand_b_e1_q <= 33'b0;
-    mulhi_sel_e1_q <= 1'b0;
+    vote3_mulhi_sel_e1_q <= {3{ 1'b0}};
 end
 else if (hold_i)
     ;
@@ -127,13 +130,13 @@ else if (opcode_valid_i && mult_inst_w)
 begin
     operand_a_e1_q <= operand_a_r;
     operand_b_e1_q <= operand_b_r;
-    mulhi_sel_e1_q <= ~((opcode_opcode_i & `INST_MUL_MASK) == `INST_MUL);
+    vote3_mulhi_sel_e1_q <= {3{ ~((opcode_opcode_i & `INST_MUL_MASK) == `INST_MUL)}};
 end
 else
 begin
     operand_a_e1_q <= 33'b0;
     operand_b_e1_q <= 33'b0;
-    mulhi_sel_e1_q <= 1'b0;
+    vote3_mulhi_sel_e1_q <= {3{ 1'b0}};
 end
 
 assign mult_result_w = {{ 32 {operand_a_e1_q[32]}}, operand_a_e1_q}*{{ 32 {operand_b_e1_q[32]}}, operand_b_e1_q};

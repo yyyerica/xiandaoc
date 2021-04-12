@@ -122,16 +122,25 @@ wire [1:0]  current_priv_w;
 reg [1:0]   csr_priv_r;
 reg         csr_readonly_r;
 reg         csr_write_r;
-reg         set_r;
-reg         clr_r;
-reg         csr_fault_r;
+                  
+wire set_r;
+reg [3:0]vote3_set_r;
+vote3 vote3module_set_r(.r3(vote3_set_r),.r(set_r));
+                  
+wire clr_r;
+reg [3:0]vote3_clr_r;
+vote3 vote3module_clr_r(.r3(vote3_clr_r),.r(clr_r));
+                        
+wire csr_fault_r;
+reg [3:0]vote3_csr_fault_r;
+vote3 vote3module_csr_fault_r(.r3(vote3_csr_fault_r),.r(csr_fault_r));
 
 reg [31:0]  data_r;
 
 always @ *
 begin
-    set_r           = csrrw_w | csrrs_w | csrrwi_w | csrrsi_w;
-    clr_r           = csrrw_w | csrrc_w | csrrwi_w | csrrci_w;
+    vote3_set_r = {3{ csrrw_w | csrrs_w | csrrwi_w | csrrsi_w}};
+    vote3_clr_r = {3{ csrrw_w | csrrc_w | csrrwi_w | csrrci_w}};
 
     csr_priv_r      = opcode_opcode_i[29:28];
     csr_readonly_r  = (opcode_opcode_i[31:30] == 2'd3);
@@ -143,7 +152,7 @@ begin
                             {27'b0, opcode_ra_idx_i} : opcode_ra_operand_i;
 
     // Detect access fault on CSR access
-    csr_fault_r     = SUPPORT_SUPER ? (opcode_valid_i && (set_r | clr_r) && ((csr_write_r && csr_readonly_r) || (current_priv_w < csr_priv_r))) : 1'b0;
+    vote3_csr_fault_r = {3{ SUPPORT_SUPER ? (opcode_valid_i && (set_r | clr_r) && ((csr_write_r && csr_readonly_r) || (current_priv_w < csr_priv_r))) : 1'b0}};
 end
 
 wire satp_update_w = (opcode_valid_i && (set_r || clr_r) && csr_write_r && (opcode_opcode_i[31:20] == `CSR_SATP));
@@ -309,20 +318,23 @@ assign ifence_o = ifence_q;
 //-----------------------------------------------------------------
 reg        branch_q;
 reg [31:0] branch_target_q;
-reg        reset_q;
+                   
+wire reset_q;
+reg [3:0]vote3_reset_q;
+vote3 vote3module_reset_q(.r3(vote3_reset_q),.r(reset_q));
 
 always @ (posedge clk_i or posedge rst_i)
 if (rst_i)
 begin
     branch_target_q <= 32'b0;
     branch_q        <= 1'b0;
-    reset_q         <= 1'b1;
+    vote3_reset_q <= {3{ 1'b1}};
 end
 else if (reset_q)
 begin
     branch_target_q <= reset_vector_i;
     branch_q        <= 1'b1;
-    reset_q         <= 1'b0;
+    vote3_reset_q <= {3{ 1'b0}};
 end
 else
 begin

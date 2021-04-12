@@ -105,7 +105,10 @@ reg [31:0]  csr_mcycle_q;
 reg [31:0]  csr_mscratch_q;
 reg [31:0]  csr_mtval_q;
 reg [31:0]  csr_mtimecmp_q;
-reg         csr_mtime_ie_q;
+                           
+wire csr_mtime_ie_q;
+reg [3:0]vote3_csr_mtime_ie_q;
+vote3 vote3module_csr_mtime_ie_q(.r3(vote3_csr_mtime_ie_q),.r(csr_mtime_ie_q));
 reg [31:0]  csr_medeleg_q;
 reg [31:0]  csr_mideleg_q;
 
@@ -124,9 +127,15 @@ reg [31:0] irq_pending_r;
 reg [31:0] irq_masked_r;
 reg [1:0]  irq_priv_r;
 
-reg        m_enabled_r;
+                       
+wire m_enabled_r;
+reg [3:0]vote3_m_enabled_r;
+vote3 vote3module_m_enabled_r(.r3(vote3_m_enabled_r),.r(m_enabled_r));
 reg [31:0] m_interrupts_r;
-reg        s_enabled_r;
+                       
+wire s_enabled_r;
+reg [3:0]vote3_s_enabled_r;
+vote3 vote3module_s_enabled_r(.r3(vote3_s_enabled_r),.r(s_enabled_r));
 reg [31:0] s_interrupts_r;
 
 always @ *
@@ -134,8 +143,8 @@ begin
     if (SUPPORT_SUPER)
     begin
         irq_pending_r   = (csr_mip_q & csr_mie_q);
-        m_enabled_r     = (csr_mpriv_q < `PRIV_MACHINE) || (csr_mpriv_q == `PRIV_MACHINE && csr_sr_q[`SR_MIE_R]);
-        s_enabled_r     = (csr_mpriv_q < `PRIV_SUPER)   || (csr_mpriv_q == `PRIV_SUPER   && csr_sr_q[`SR_SIE_R]);
+        vote3_m_enabled_r = {3{ (csr_mpriv_q < `PRIV_MACHINE) || (csr_mpriv_q == `PRIV_MACHINE && csr_sr_q[`SR_MIE_R])}};
+        vote3_s_enabled_r = {3{ (csr_mpriv_q < `PRIV_SUPER)   || (csr_mpriv_q == `PRIV_SUPER   && csr_sr_q[`SR_SIE_R])}};
         m_interrupts_r  = m_enabled_r    ? (irq_pending_r & ~csr_mideleg_q) : 32'b0;
         s_interrupts_r  = s_enabled_r    ? (irq_pending_r &  csr_mideleg_q) : 32'b0;
         irq_masked_r    = (|m_interrupts_r) ? m_interrupts_r : s_interrupts_r;
@@ -159,15 +168,18 @@ else if (|irq_masked_r)
 assign interrupt_o = irq_masked_r;
 
 
-reg csr_mip_upd_q;
+                  
+wire csr_mip_upd_q;
+reg [3:0]vote3_csr_mip_upd_q;
+vote3 vote3module_csr_mip_upd_q(.r3(vote3_csr_mip_upd_q),.r(csr_mip_upd_q));
 
 always @ (posedge clk_i or posedge rst_i)
 if (rst_i)
-    csr_mip_upd_q <= 1'b0;
+    vote3_csr_mip_upd_q <= {3{ 1'b0}};
 else if ((csr_ren_i && csr_raddr_i == `CSR_MIP) || (csr_ren_i && csr_raddr_i == `CSR_SIP))
-    csr_mip_upd_q <= 1'b1;
+    vote3_csr_mip_upd_q <= {3{ 1'b1}};
 else if (csr_waddr_i == `CSR_MIP || csr_waddr_i == `CSR_SIP || (|exception_i))
-    csr_mip_upd_q <= 1'b0;
+    vote3_csr_mip_upd_q <= {3{ 1'b0}};
 
 wire buffer_mip_w = (csr_ren_i && csr_raddr_i == `CSR_MIP) | (csr_ren_i && csr_raddr_i == `CSR_SIP) | csr_mip_upd_q;
 
@@ -509,7 +521,7 @@ begin
     csr_mcycle_q       <= 32'b0;
     csr_mscratch_q     <= 32'b0;
     csr_mtimecmp_q     <= 32'b0;
-    csr_mtime_ie_q     <= 1'b0;
+    vote3_csr_mtime_ie_q <= {3{ 1'b0}};
     csr_medeleg_q      <= 32'b0;
     csr_mideleg_q      <= 32'b0;
 
@@ -537,7 +549,7 @@ begin
     csr_mcycle_q       <= csr_mcycle_r;
     csr_mscratch_q     <= csr_mscratch_r;
     csr_mtimecmp_q     <= SUPPORT_MTIMECMP ? csr_mtimecmp_r : 32'b0;
-    csr_mtime_ie_q     <= SUPPORT_MTIMECMP ? csr_mtime_ie_r : 1'b0;
+    vote3_csr_mtime_ie_q <= {3{ SUPPORT_MTIMECMP ? csr_mtime_ie_r : 1'b0}};
     csr_medeleg_q      <= SUPPORT_SUPER ? (csr_medeleg_r   & `CSR_MEDELEG_MASK) : 32'b0;
     csr_mideleg_q      <= SUPPORT_SUPER ? (csr_mideleg_r   & `CSR_MIDELEG_MASK) : 32'b0;
 

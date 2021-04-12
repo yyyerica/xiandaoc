@@ -110,13 +110,14 @@ def onebitenhance(regname,filename,modulenum):
         eq=content[i].find('<=')
         if(eq!=-1):
             x=1;
-            while(content[i][eq-x]==' ' or content[i][x]=='\n' or content[i][x]=='\t'):
+            while(content[i][eq-x]==' ' or content[i][eq-x]=='\n' or content[i][eq-x]=='\t'):
                 x=x+1;
             if(content[i][eq-x-len(regname)+1:eq-x+1]==regname): 
                 regnameindex=eq-x-len(regname)+1
                 contentx=content[i][:regnameindex]+'vote3_'+regname+' <= {3{'+content[i][eq+2:-1]+'}};'
                 content[i]=list(content[i])
                 content[i]=contentx
+               
 
 
     for i in range(findstart,findend+1):
@@ -129,17 +130,28 @@ def onebitenhance(regname,filename,modulenum):
             if(findname(functionend,'endfunction',content[i])):
                 infunction=0
             else:
-                continue 
-        eq=content[i].find('=')
-        if(eq!=-1):
-            x=1;
-            while(content[i][eq-x]==' ' or content[i][x]=='\n' or content[i][x]=='\t'):
-                x=x+1;
-            if(content[i][eq-x-len(regname)+1:eq-x+1]==regname): 
-                regnameindex=eq-x-len(regname)+1
-                contentx=content[i][:regnameindex]+'vote3_'+regname+' = {3{'+content[i][eq+1:-1]+'}};'
-                content[i]=list(content[i])
-                content[i]=contentx
+                continue
+        begin=0
+        end=len(content[i])
+        eq=0        
+        while(eq!=-1):
+            eq=content[i].find('=',begin,end)
+
+            if(eq!=-1):
+                if(content[i][eq-1]=='<' or content[i][eq+1]=='=' or content[i][eq-1]=='='):
+                    begin=eq+2
+                    eq=-2
+            if(eq>=0):
+                x=1;
+                while(content[i][eq-x]==' ' or content[i][eq-x]=='\n' or content[i][eq-x]=='\t'):
+                    x=x+1;
+                if(content[i][eq-x-len(regname)+1:eq-x+1]==regname): 
+                    regnameindex=eq-x-len(regname)+1
+                    contentx=content[i][:regnameindex]+'vote3_'+regname+' = {3{'+content[i][eq+1:-1]+'}};'
+                    content[i]=list(content[i])
+                    content[i]=contentx
+                break
+            
     i=0 
     while(i<len(content)):
         if(content[i]==''):
@@ -184,7 +196,6 @@ def changeindex(reg_num_list,filenamelist):
             elif(i[1]<=numindexrange[j] and i[1]>numindexrange[j-1]):
                 i.append((i[1]-numindexrange[j-1]-1))
                 i[1]=j
-                print(i)
                 break
 
 
@@ -198,19 +209,20 @@ def isit(strx,index):
 
 
 
-def enhanceall(reg_num_list,filenamelist,num):
+def enhanceall(reg_num_list,filelist,num):
     rate=[0.3,0.6,1]
-    print(reg_num_list)
-    filepath='newverilog'
-    if not os.path.exists(filepath):
-        os.makedirs(filepath)
-    for i in filenamelist:
+    filepath=os.getcwd()
+    filepath=os.path.join(filepath,'new_verilog')
+    if  os.path.exists(filepath):
+        shutil.rmtree(filepath)
+    os.makedirs(filepath)
+    for i in filelist:
         srcfile = os.path.join(i) 
-        dstfile = os.path.join(filepath,i) 
+        dstfile = os.path.join(filepath,os.path.basename(i)) 
         shutil.copyfile(srcfile, dstfile)
     endnum=math.ceil(len(reg_num_list)*rate[num])
     for i in range(endnum):
-        onebitenhance(reg_num_list[i][0],os.path.join(filepath,filenamelist[reg_num_list[i][1]]),reg_num_list[i][3])
+        onebitenhance(reg_num_list[i][0],os.path.join(filepath,filelist[reg_num_list[i][1]]),reg_num_list[i][3])
     
     srcfile = os.path.join('vote3.v') 
     dstfile = os.path.join(filepath,'vote3.v') 

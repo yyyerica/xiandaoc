@@ -104,26 +104,29 @@ wire        stall_w       = !fetch_accept_i || icache_busy_w || !icache_accept_i
 //-------------------------------------------------------------
 // Buffered branch
 //-------------------------------------------------------------
-reg         branch_q;
+                     
+wire branch_q;
+reg [3:0]vote3_branch_q;
+vote3 vote3module_branch_q(.r3(vote3_branch_q),.r(branch_q));
 reg [31:0]  branch_pc_q;
 reg [1:0]   branch_priv_q;
 
 always @ (posedge clk_i or posedge rst_i)
 if (rst_i)
 begin
-    branch_q       <= 1'b0;
+    vote3_branch_q <= {3{ 1'b0}};
     branch_pc_q    <= 32'b0;
     branch_priv_q  <= `PRIV_MACHINE;
 end
 else if (branch_request_i)
 begin
-    branch_q       <= 1'b1;
+    vote3_branch_q <= {3{ 1'b1}};
     branch_pc_q    <= branch_pc_i;
     branch_priv_q  <= branch_priv_i;
 end
 else if (icache_rd_o && icache_accept_i)
 begin
-    branch_q       <= 1'b0;
+    vote3_branch_q <= {3{ 1'b0}};
     branch_pc_q    <= 32'b0;
 end
 
@@ -156,17 +159,20 @@ else
 //-------------------------------------------------------------
 // Request tracking
 //-------------------------------------------------------------
-reg icache_fetch_q;
+                   
+wire icache_fetch_q;
+reg [3:0]vote3_icache_fetch_q;
+vote3 vote3module_icache_fetch_q(.r3(vote3_icache_fetch_q),.r(icache_fetch_q));
 reg icache_invalidate_q;
 
 // ICACHE fetch tracking
 always @ (posedge clk_i or posedge rst_i)
 if (rst_i)
-    icache_fetch_q <= 1'b0;
+    vote3_icache_fetch_q <= {3{ 1'b0}};
 else if (icache_rd_o && icache_accept_i)
-    icache_fetch_q <= 1'b1;
+    vote3_icache_fetch_q <= {3{ 1'b1}};
 else if (icache_valid_i)
-    icache_fetch_q <= 1'b0;
+    vote3_icache_fetch_q <= {3{ 1'b0}};
 
 always @ (posedge clk_i or posedge rst_i)
 if (rst_i)

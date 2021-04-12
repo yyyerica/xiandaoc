@@ -1,14 +1,3 @@
-from __future__ import absolute_import
-from __future__ import print_function
-import sys
-import os
-from optparse import OptionParser
-import enhanceone
-from pyverilog.ast_code_generator.codegen import ASTCodeGenerator
-
-# the next line can be removed after installation
-#sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 import pyverilog
 from pyverilog.vparser.parser import parse
 
@@ -46,14 +35,12 @@ def main():
                             preprocess_include=options.include,
                             preprocess_define=options.define)
     ast.show()
-    A,gnamelist,listvalues,listoneregrank=ast.checksignals()#receive 3 lists
-    ast.changereg('qx',0)
-    ast.show()
+    A,gnamelist,listvalues,listoneregrank=ast.checksignals()#receive 4 lists
+    #enhanceone.changeindex(listoneregrank,filelist) 
+    ts.rpt(listoneregrank,filelist)  
+    #enhanceone.enhanceall(listoneregrank,filelist,1)
     for lineno, directive in directives:
         print('Line %d : %s' % (lineno, directive))
-    codegen = ASTCodeGenerator()
-    rslt = codegen.visit(ast)
-    print(rslt)
         
 if __name__ == '__main__':
     main()

@@ -92,9 +92,18 @@ reg [31:0] dividend_q;
 reg [62:0] divisor_q;
 reg [31:0] quotient_q;
 reg [31:0] q_mask_q;
-reg        div_inst_q;
-reg        div_busy_q;
-reg        invert_res_q;
+                      
+wire div_inst_q;
+reg [3:0]vote3_div_inst_q;
+vote3 vote3module_div_inst_q(.r3(vote3_div_inst_q),.r(div_inst_q));
+                      
+wire div_busy_q;
+reg [3:0]vote3_div_busy_q;
+vote3 vote3module_div_busy_q(.r3(vote3_div_busy_q),.r(div_busy_q));
+                        
+wire invert_res_q;
+reg [3:0]vote3_invert_res_q;
+vote3 vote3module_invert_res_q(.r3(vote3_invert_res_q),.r(invert_res_q));
 
 wire div_start_w    = opcode_valid_i & div_rem_inst_w;
 wire div_complete_w = !(|q_mask_q) & div_busy_q;
@@ -102,19 +111,19 @@ wire div_complete_w = !(|q_mask_q) & div_busy_q;
 always @(posedge clk_i or posedge rst_i)
 if (rst_i)
 begin
-    div_busy_q     <= 1'b0;
+    vote3_div_busy_q <= {3{ 1'b0}};
     dividend_q     <= 32'b0;
     divisor_q      <= 63'b0;
-    invert_res_q   <= 1'b0;
+    vote3_invert_res_q <= {3{ 1'b0}};
     quotient_q     <= 32'b0;
     q_mask_q       <= 32'b0;
-    div_inst_q     <= 1'b0;
+    vote3_div_inst_q <= {3{ 1'b0}};
 end
 else if (div_start_w)
 begin
 
-    div_busy_q     <= 1'b1;
-    div_inst_q     <= div_operation_w;
+    vote3_div_busy_q <= {3{ 1'b1}};
+    vote3_div_inst_q <= {3{ div_operation_w}};
 
     if (signed_operation_w && opcode_ra_operand_i[31])
         dividend_q <= -opcode_ra_operand_i;
@@ -126,15 +135,15 @@ begin
     else
         divisor_q <= {opcode_rb_operand_i, 31'b0};
 
-    invert_res_q  <= (((opcode_opcode_i & `INST_DIV_MASK) == `INST_DIV) && (opcode_ra_operand_i[31] != opcode_rb_operand_i[31]) && |opcode_rb_operand_i) || 
-                     (((opcode_opcode_i & `INST_REM_MASK) == `INST_REM) && opcode_ra_operand_i[31]);
+    vote3_invert_res_q <= {3{ (((opcode_opcode_i & `INST_DIV_MASK) == `INST_DIV) && (opcode_ra_operand_i[31] != opcode_rb_operand_i[31]) && |opcode_rb_operand_i) || 
+                     (((opcode_opcode_i & `INST_REM_MASK) == `INST_REM) && opcode_ra_operand_i[31])}};
 
     quotient_q     <= 32'b0;
     q_mask_q       <= 32'h80000000;
 end
 else if (div_complete_w)
 begin
-    div_busy_q <= 1'b0;
+    vote3_div_busy_q <= {3{ 1'b0}};
 end
 else if (div_busy_q)
 begin

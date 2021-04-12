@@ -1,10 +1,13 @@
-# -*- coding: utf-8 -*-
-from reportlab.pdfgen.canvas import Canvas
+
+# -*- coding: utf-8 -*-  
+
+
+from reportlab.pdfgen.canvas import Canvas  
 from reportlab.pdfbase import pdfmetrics  
 from reportlab.pdfbase.cidfonts import UnicodeCIDFont  
 pdfmetrics.registerFont(UnicodeCIDFont('STSong-Light'))
-from reportlab.pdfbase.ttfonts import TTFont
-pdfmetrics.registerFont(TTFont('msyh', 'msyh.ttf'))
+from reportlab.pdfbase.ttfonts import TTFont 
+pdfmetrics.registerFont(TTFont('msyh', 'msyh.ttf'))  
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer,Image,Table,TableStyle
@@ -22,12 +25,9 @@ def rpt(list2,filename):
     story.append(Paragraph(rpt_title,normalStyle)) 
 
 
-    # text = '''<para autoLeading="off" fontSize=8><font face="msyh" >报告介绍：</font><br/>
-    # <font face="msyh" fontsize=7>本报告是关于在verilog代码层面对安全性进行检测的生成报告，对于verilog中命名的变量进行重要性排序，下列是代码中一位寄存器的重要性排序，并给出了他们所在的文件名,程序更改后代码另存于newverilog文件夹。</font><br/>'''
-
     text = '''<para autoLeading="off" fontSize=8><font face="msyh" >报告介绍：</font><br/>
-        <font face="msyh" fontsize=7>本报告是关于在verilog代码层面对安全性进行检测的生成报告，对于verilog中命名的变量进行重要性排序，下列是代码中一位寄存器的重要性排序，并给出了他们所在的文件名,程序更改后代码另存于newverilog文件夹。</font><br/></para>'''
-
+    <font face="msyh" fontsize=7>本报告是关于在verilog代码层面对安全性进行检测的生成报告，对于verilog中命名的变量进行重要性排序，下列是代码中一位寄存器的重要性排序，并给出了他们所在的文件名,程序更改后代码另存于newverilog文件夹。</font><br/></para>'''
+    
     story.append(Paragraph(text,normalStyle))
   
 

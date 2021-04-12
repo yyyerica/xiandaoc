@@ -173,26 +173,26 @@ def hasFile(templateFile, DestFile):
     elif template2 :
         # print('yes2');
         # os.makedirs(DestFile); 
-        fd = open(DestFile, mode="w");
-        fd.close();
+        fd = open(DestFile, mode="w")
+        fd.close()
     elif  template1 :
         # print('yes3');  
         # os.makedirs(templateFile); 
-        fd = open(templateFile, mode="w");
-        fd.close();
+        fd = open(templateFile, mode="w")
+        fd.close()
 
 #是否存在该文件夹
 def hasDir(templatePath, DestPath):
-    template1 =  os.path.exists(templatePath);
-    template2 =  os.path.exists(DestPath);    
-    if template1 and template2 :
-        print('yes');
+    template1 =  os.path.exists(templatePath)
+    template2 =  os.path.exists(DestPath)
+    if template1 and template2:
+        print('yes')
     elif template2 :
         # print('yes2');
-        os.makedirs(templatePath); 
+        os.makedirs(templatePath)
     elif  template1 :
         # print('yes3');  
-        os.makedirs(DestPath);    
+        os.makedirs(DestPath)
 
 #备份文件
 def bakFileFunction(fileName,bakFileName):
@@ -200,37 +200,37 @@ def bakFileFunction(fileName,bakFileName):
    
 #检查输出端口
 def outputPort(fileName):
-    count = 0 ;
-    name1 = '';
+    count = 0
+    name1 = ''
     with open(fileName, "r+") as file:
         fileContent = file.readlines()
         for line in fileContent:
             if 'output' in line:
-                count = count + 1;
-                test = line.split();
-                a = len(test)-1;
+                count = count + 1
+                test = line.split()
+                a = len(test)-1
                 if "data" in test[a] and "wr" in test[a]:
-                    name1 = test[a];
+                    name1 = test[a]
                     # print(test);
         # print(count)
-    return name1;
+    return name1
 
 #检查输出端口
 def inputPort(fileName):
-    count = 0 ;
-    name2 = '' ;
+    count = 0
+    name2 = ''
     with open(fileName, "r+") as file:
         fileContent = file.readlines()
         for line in fileContent:
             if 'input' in line:
-                count = count + 1;
-                test = line.split();
-                a = len(test)-1;
+                count = count + 1
+                test = line.split()
+                a = len(test)-1
                 if "data" in test[a] and "rd" in test[a]:
-                    name2 = test[a];
+                    name2 = test[a]
                     # print(test);
         # print(count)
-    return name2;
+    return name2
 
 
 #检查总线位宽
@@ -239,58 +239,58 @@ def inputNum(fileName):
         fileContent = file.readlines()
         for line in fileContent:
             if 'input' in line and "data" in line and "rd" in line:
-                testM = line.split('[');
+                testM = line.split('[')
                 # print(testM);
-                tempK = testM[1].split(':');
+                tempK = testM[1].split(':')
                 # print(tempK)
-                num1 = int(tempK[0]);
-                print(tempK[0] +'\n fininah');
-    return num1;
+                num1 = int(tempK[0])
+                print(tempK[0] +'\n fininah')
+    return num1
 
 #检查clk端口
 def clkPort(fileName):
-    count = 0 ;
-    clkname = '';
+    count = 0
+    clkname = ''
     with open(fileName, "r+") as file:
         fileContent = file.readlines()
         for line in fileContent:
             if 'clk' in line and 'input' in line:
-                count = count + 1;
-                test = line.split();
-                a = len(test)-1;
+                count = count + 1
+                test = line.split()
+                a = len(test)-1
                 if "clk" in test[a]:
-                    clkname = test[a];
-                    print(test);
+                    clkname = test[a]
+                    print(test)
         print(count)
-    return clkname;
+    return clkname
 
 
 #检查rst_n端口
 def rstPort(fileName):
-    count = 0 ;
-    rstName = '';
+    count = 0
+    rstName = ''
     with open(fileName, "r+") as file:
         fileContent = file.readlines()
         for line in fileContent:
             if 'rst' in line and 'input' in line:
-                count = count + 1;
-                test = line.split();
-                a = len(test)-1;
+                count = count + 1
+                test = line.split()
+                a = len(test)-1
                 if "rst" in test[a]:
-                    rstName = test[a];
-                    print(test);
+                    rstName = test[a]
+                    print(test)
         print(count)
     return rstName;
 
 def copyvFiles(templatePath, ProjectDir,  DestPath):
-    hasDir(templatePath, DestPath);
-    print('this is copyvfille', templatePath, ProjectDir);
+    hasDir(templatePath, DestPath)
+    print('this is copyvfille', templatePath, ProjectDir)
     s2 = ProjectDir.split(' ')
     print(s2)
     for file_name in s2:
-        full_file_name = os.path.join(templatePath, file_name);
+        full_file_name = os.path.join(templatePath, file_name)
         if os.path.isfile(full_file_name):
-            shutil.copy(full_file_name, DestPath);#拷贝
+            shutil.copy(full_file_name, DestPath)#拷贝
 #            print("copy file" + full_file_name);
             
 
@@ -304,7 +304,7 @@ def n_enhanceInOutSecurity(topFileName, projectDir, destDir):
     # topFile = destDir + '/' + topFileName
     topFilName1 = topFileName.split(".")
     # bakFile = destDir + '/' + topFilName1[0] + '_1.v'
-    workCopyDir = os.path.join(workDir, 'sm3_4decode', 'll3');
+    workCopyDir = os.path.join(workDir, 'sm3_4decode', 'll3')
     bakFile = os.path.join(workDir, 'sm3_4decode', 'll3', topFileName)
     bakFile1 = os.path.join(workDir, 'sm3_4decode', 'll3', topFilName1[0])
     bakFile1 = bakFile1 + '_1.v'
@@ -312,33 +312,33 @@ def n_enhanceInOutSecurity(topFileName, projectDir, destDir):
     # print(bakFile    + '\n' +bakFile1 )
     
     # workCopyDir = workDir + '\\sm3_4decode\\ll1';
-    # bakFile1 = workCopyDir + '\\' + topFilName1[0] + '_1.v' ;
+    # bakFile1 = workCopyDir + '\\' + topFilName1[0] + '_1.v'
     # bakFile = workCopyDir + '\\' + topFileName;
     # print(bakFile);
     
-    hasFile(bakFile1, bakFile);
-    bakFileFunction(topFile, bakFile);
-    bakFileFunction(topFile, bakFile1);
+    hasFile(bakFile1, bakFile)
+    bakFileFunction(topFile, bakFile)
+    bakFileFunction(topFile, bakFile1)
     
     copyvFiles(destDir, projectDir, workCopyDir)
          
-    name1 = inputPort(bakFile);
-    print(name1);
-    name2 = outputPort(bakFile);
-    print(name2);
-    num1 = inputNum(bakFile);
-    print(num1);
-    rstname = rstPort(bakFile);
-    clkname = clkPort(bakFile);
+    name1 = inputPort(bakFile)
+    print(name1)
+    name2 = outputPort(bakFile)
+    print(name2)
+    num1 = inputNum(bakFile)
+    print(num1)
+    rstname = rstPort(bakFile)
+    clkname = clkPort(bakFile)
     print(clkname, rstname);
     # templateName = workDir + '\\sm3_4decode\\sm3_sm4_encode_decode_code\\sm34_encode_decode.v';
     templateName = os.path.join(workDir,'sm3_4decode','sm3_sm4_encode_decode_code','sm34_encode_decode.v')
-    print('starting read file and modify!');
-    readFile(bakFile, bakFile1, name1, name2, templateName, num1, clkname, rstname);
-    print('Modify finish copy file to dest Project!');
+    print('starting read file and modify!')
+    readFile(bakFile, bakFile1, name1, name2, templateName, num1, clkname, rstname)
+    print('Modify finish copy file to dest Project!')
     # templatePath = workDir + '\\sm3_4decode\\sm3_sm4_encode_decode_code\\sm3_sm4_encode_decode_code';
     templatePath = os.path.join(workDir, 'sm3_4decode', 'sm3_sm4_encode_decode_code', 'sm3_sm4_encode_decode_code')
-    copyFiles(templatePath, workCopyDir);
+    copyFiles(templatePath, workCopyDir)
 
 # if __name__ == '__main__':
 #     topFileName = 'riscv_core.v';

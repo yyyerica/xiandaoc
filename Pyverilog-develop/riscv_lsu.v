@@ -99,14 +99,23 @@ module riscv_lsu
 //-----------------------------------------------------------------
 reg [ 31:0]  mem_addr_q;
 reg [ 31:0]  mem_data_wr_q;
-reg          mem_rd_q;
+                      
+wire mem_rd_q;
+reg [3:0]vote3_mem_rd_q;
+vote3 vote3module_mem_rd_q(.r3(vote3_mem_rd_q),.r(mem_rd_q));
 reg [  3:0]  mem_wr_q;
 reg          mem_cacheable_q;
 reg          mem_invalidate_q;
 reg          mem_writeback_q;
 reg          mem_flush_q;
-reg          mem_unaligned_e1_q;
-reg          mem_unaligned_e2_q;
+                                
+wire mem_unaligned_e1_q;
+reg [3:0]vote3_mem_unaligned_e1_q;
+vote3 vote3module_mem_unaligned_e1_q(.r3(vote3_mem_unaligned_e1_q),.r(mem_unaligned_e1_q));
+                                
+wire mem_unaligned_e2_q;
+reg [3:0]vote3_mem_unaligned_e2_q;
+vote3 vote3module_mem_unaligned_e2_q(.r3(vote3_mem_unaligned_e2_q),.r(mem_unaligned_e2_q));
 
 reg          mem_load_q;
 reg          mem_xb_q;
@@ -116,7 +125,10 @@ reg          mem_ls_q;
 //-----------------------------------------------------------------
 // Outstanding Access Tracking
 //-----------------------------------------------------------------
-reg pending_lsu_e2_q;
+                     
+wire pending_lsu_e2_q;
+reg [3:0]vote3_pending_lsu_e2_q;
+vote3 vote3module_pending_lsu_e2_q(.r3(vote3_pending_lsu_e2_q),.r(pending_lsu_e2_q));
 
 wire issue_lsu_e1_w    = (mem_rd_o || (|mem_wr_o) || mem_writeback_o || mem_invalidate_o || mem_flush_o) && mem_accept_i;
 wire complete_ok_e2_w  = mem_ack_i & ~mem_error_i;
@@ -124,11 +136,11 @@ wire complete_err_e2_w = mem_ack_i & mem_error_i;
 
 always @ (posedge clk_i or posedge rst_i)
 if (rst_i)
-    pending_lsu_e2_q <= 1'b0;
+    vote3_pending_lsu_e2_q <= {3{ 1'b0}};
 else if (issue_lsu_e1_w)
-    pending_lsu_e2_q <= 1'b1;
+    vote3_pending_lsu_e2_q <= {3{ 1'b1}};
 else if (complete_ok_e2_w || complete_err_e2_w)
-    pending_lsu_e2_q <= 1'b0;
+    vote3_pending_lsu_e2_q <= {3{ 1'b0}};
 
 // Delay next instruction if outstanding response is late
 wire delay_lsu_e2_w = pending_lsu_e2_q && !complete_ok_e2_w;
@@ -138,9 +150,9 @@ wire delay_lsu_e2_w = pending_lsu_e2_q && !complete_ok_e2_w;
 //-----------------------------------------------------------------
 always @ (posedge clk_i or posedge rst_i)
 if (rst_i)
-    mem_unaligned_e2_q <= 1'b0;
+    vote3_mem_unaligned_e2_q <= {3{ 1'b0}};
 else
-    mem_unaligned_e2_q <= mem_unaligned_e1_q & ~delay_lsu_e2_w;
+    vote3_mem_unaligned_e2_q <= {3{ mem_unaligned_e1_q & ~delay_lsu_e2_w}};
 
 //-----------------------------------------------------------------
 // Opcode decode
@@ -172,18 +184,24 @@ wire req_sw_lw_w = ((opcode_opcode_i & `INST_SW_MASK) == `INST_SW) || ((opcode_o
 wire req_sh_lh_w = ((opcode_opcode_i & `INST_SH_MASK) == `INST_SH) || ((opcode_opcode_i & `INST_LH_MASK) == `INST_LH) || ((opcode_opcode_i & `INST_LHU_MASK) == `INST_LHU);
 
 reg [31:0]  mem_addr_r;
-reg         mem_unaligned_r;
+                            
+wire mem_unaligned_r;
+reg [3:0]vote3_mem_unaligned_r;
+vote3 vote3module_mem_unaligned_r(.r3(vote3_mem_unaligned_r),.r(mem_unaligned_r));
 reg [31:0]  mem_data_r;
-reg         mem_rd_r;
+                     
+wire mem_rd_r;
+reg [3:0]vote3_mem_rd_r;
+vote3 vote3module_mem_rd_r(.r3(vote3_mem_rd_r),.r(mem_rd_r));
 reg [3:0]   mem_wr_r;
 
 always @ *
 begin
     mem_addr_r      = 32'b0;
     mem_data_r      = 32'b0;
-    mem_unaligned_r = 1'b0;
+    vote3_mem_unaligned_r = {3{ 1'b0}};
     mem_wr_r        = 4'b0;
-    mem_rd_r        = 1'b0;
+    vote3_mem_rd_r = {3{ 1'b0}};
 
     if (opcode_valid_i && ((opcode_opcode_i & `INST_CSRRW_MASK) == `INST_CSRRW))
         mem_addr_r = opcode_ra_operand_i;
@@ -193,11 +211,11 @@ begin
         mem_addr_r = opcode_ra_operand_i + {{20{opcode_opcode_i[31]}}, opcode_opcode_i[31:25], opcode_opcode_i[11:7]};
 
     if (opcode_valid_i && req_sw_lw_w)
-        mem_unaligned_r = (mem_addr_r[1:0] != 2'b0);
+        vote3_mem_unaligned_r = {3{ (mem_addr_r[1:0] != 2'b0)}};
     else if (opcode_valid_i && req_sh_lh_w)
-        mem_unaligned_r = mem_addr_r[0];
+        vote3_mem_unaligned_r = {3{ mem_addr_r[0]}};
 
-    mem_rd_r = (opcode_valid_i && load_inst_w && !mem_unaligned_r);
+    vote3_mem_rd_r = {3{ (opcode_valid_i && load_inst_w && !mem_unaligned_r)}};
 
     if (opcode_valid_i && ((opcode_opcode_i & `INST_SW_MASK) == `INST_SW) && !mem_unaligned_r)
     begin
@@ -263,13 +281,13 @@ if (rst_i)
 begin
     mem_addr_q         <= 32'b0;
     mem_data_wr_q      <= 32'b0;
-    mem_rd_q           <= 1'b0;
+    vote3_mem_rd_q <= {3{ 1'b0}};
     mem_wr_q           <= 4'b0;
     mem_cacheable_q    <= 1'b0;
     mem_invalidate_q   <= 1'b0;
     mem_writeback_q    <= 1'b0;
     mem_flush_q        <= 1'b0;
-    mem_unaligned_e1_q <= 1'b0;
+    vote3_mem_unaligned_e1_q <= {3{ 1'b0}};
     mem_load_q         <= 1'b0;
     mem_xb_q           <= 1'b0;
     mem_xh_q           <= 1'b0;
@@ -280,13 +298,13 @@ else if (complete_err_e2_w || mem_unaligned_e2_q)
 begin
     mem_addr_q         <= 32'b0;
     mem_data_wr_q      <= 32'b0;
-    mem_rd_q           <= 1'b0;
+    vote3_mem_rd_q <= {3{ 1'b0}};
     mem_wr_q           <= 4'b0;
     mem_cacheable_q    <= 1'b0;
     mem_invalidate_q   <= 1'b0;
     mem_writeback_q    <= 1'b0;
     mem_flush_q        <= 1'b0;
-    mem_unaligned_e1_q <= 1'b0;
+    vote3_mem_unaligned_e1_q <= {3{ 1'b0}};
     mem_load_q         <= 1'b0;
     mem_xb_q           <= 1'b0;
     mem_xh_q           <= 1'b0;
@@ -298,13 +316,13 @@ else if (!((mem_writeback_o || mem_invalidate_o || mem_flush_o || mem_rd_o || me
 begin
     mem_addr_q         <= 32'b0;
     mem_data_wr_q      <= mem_data_r;
-    mem_rd_q           <= mem_rd_r;
+    vote3_mem_rd_q <= {3{ mem_rd_r}};
     mem_wr_q           <= mem_wr_r;
     mem_cacheable_q    <= 1'b0;
     mem_invalidate_q   <= 1'b0;
     mem_writeback_q    <= 1'b0;
     mem_flush_q        <= 1'b0;
-    mem_unaligned_e1_q <= mem_unaligned_r;
+    vote3_mem_unaligned_e1_q <= {3{ mem_unaligned_r}};
     mem_load_q         <= opcode_valid_i && load_inst_w;
     mem_xb_q           <= req_lb_w | req_sb_w;
     mem_xh_q           <= req_lh_w | req_sh_w;
@@ -366,9 +384,18 @@ u_lsu_request
 // Load response
 //-----------------------------------------------------------------
 reg [1:0]  addr_lsb_r;
-reg        load_byte_r;
-reg        load_half_r;
-reg        load_signed_r;
+                       
+wire load_byte_r;
+reg [3:0]vote3_load_byte_r;
+vote3 vote3module_load_byte_r(.r3(vote3_load_byte_r),.r(load_byte_r));
+                       
+wire load_half_r;
+reg [3:0]vote3_load_half_r;
+vote3 vote3module_load_half_r(.r3(vote3_load_half_r),.r(load_half_r));
+                         
+wire load_signed_r;
+reg [3:0]vote3_load_signed_r;
+vote3 vote3module_load_signed_r(.r3(vote3_load_signed_r),.r(load_signed_r));
 reg [31:0] wb_result_r;
 
 always @ *
@@ -377,9 +404,9 @@ begin
 
     // Tag associated with load
     addr_lsb_r    = resp_addr_w[1:0];
-    load_byte_r   = resp_byte_w;
-    load_half_r   = resp_half_w;
-    load_signed_r = resp_signed_w;
+    vote3_load_byte_r = {3{ resp_byte_w}};
+    vote3_load_half_r = {3{ resp_half_w}};
+    vote3_load_signed_r = {3{ resp_signed_w}};
 
     // Access fault - pass badaddr on writeback result bus
     if ((mem_ack_i && mem_error_i) || mem_unaligned_e2_q)

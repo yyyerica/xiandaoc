@@ -305,101 +305,131 @@ endfunction
 //-------------------------------------------------------------
 // Execute - Branch operations
 //-------------------------------------------------------------
-reg        branch_r;
-reg        branch_taken_r;
+                    
+wire branch_r;
+reg [3:0]vote3_branch_r;
+vote3 vote3module_branch_r(.r3(vote3_branch_r),.r(branch_r));
+                          
+wire branch_taken_r;
+reg [3:0]vote3_branch_taken_r;
+vote3 vote3module_branch_taken_r(.r3(vote3_branch_taken_r),.r(branch_taken_r));
 reg [31:0] branch_target_r;
-reg        branch_call_r;
-reg        branch_ret_r;
-reg        branch_jmp_r;
+                         
+wire branch_call_r;
+reg [3:0]vote3_branch_call_r;
+vote3 vote3module_branch_call_r(.r3(vote3_branch_call_r),.r(branch_call_r));
+                        
+wire branch_ret_r;
+reg [3:0]vote3_branch_ret_r;
+vote3 vote3module_branch_ret_r(.r3(vote3_branch_ret_r),.r(branch_ret_r));
+                        
+wire branch_jmp_r;
+reg [3:0]vote3_branch_jmp_r;
+vote3 vote3module_branch_jmp_r(.r3(vote3_branch_jmp_r),.r(branch_jmp_r));
 
 always @ *
 begin
-    branch_r        = 1'b0;
-    branch_taken_r  = 1'b0;
-    branch_call_r   = 1'b0;
-    branch_ret_r    = 1'b0;
-    branch_jmp_r    = 1'b0;
+    vote3_branch_r = {3{ 1'b0}};
+    vote3_branch_taken_r = {3{ 1'b0}};
+    vote3_branch_call_r = {3{ 1'b0}};
+    vote3_branch_ret_r = {3{ 1'b0}};
+    vote3_branch_jmp_r = {3{ 1'b0}};
 
     // Default branch_r target is relative to current PC
     branch_target_r = opcode_pc_i + bimm_r;
 
     if ((opcode_opcode_i & `INST_JAL_MASK) == `INST_JAL) // jal
     begin
-        branch_r        = 1'b1;
-        branch_taken_r  = 1'b1;
+        vote3_branch_r = {3{ 1'b1}};
+        vote3_branch_taken_r = {3{ 1'b1}};
         branch_target_r = opcode_pc_i + jimm20_r;
-        branch_call_r   = (opcode_rd_idx_i == 5'd1); // RA
-        branch_jmp_r    = 1'b1;
+        vote3_branch_call_r = {3{ (opcode_rd_idx_i == 5'd1)}}; // RA
+        vote3_branch_jmp_r = {3{ 1'b1}};
     end
     else if ((opcode_opcode_i & `INST_JALR_MASK) == `INST_JALR) // jalr
     begin
-        branch_r            = 1'b1;
-        branch_taken_r      = 1'b1;
+        vote3_branch_r = {3{ 1'b1}};
+        vote3_branch_taken_r = {3{ 1'b1}};
         branch_target_r     = opcode_ra_operand_i + imm12_r;
         branch_target_r[0]  = 1'b0;
-        branch_ret_r        = (opcode_ra_idx_i == 5'd1 && imm12_r[11:0] == 12'b0); // RA
-        branch_call_r       = ~branch_ret_r && (opcode_rd_idx_i == 5'd1); // RA
-        branch_jmp_r        = ~(branch_call_r | branch_ret_r);
+        vote3_branch_ret_r = {3{ (opcode_ra_idx_i == 5'd1 && imm12_r[11:0] == 12'b0)}}; // RA
+        vote3_branch_call_r = {3{ ~branch_ret_r && (opcode_rd_idx_i == 5'd1)}}; // RA
+        vote3_branch_jmp_r = {3{ ~(branch_call_r | branch_ret_r)}};
     end
     else if ((opcode_opcode_i & `INST_BEQ_MASK) == `INST_BEQ) // beq
     begin
-        branch_r      = 1'b1;
-        branch_taken_r= (opcode_ra_operand_i == opcode_rb_operand_i);
+        vote3_branch_r = {3{ 1'b1}};
+        vote3_branch_taken_r = {3{ (opcode_ra_operand_i == opcode_rb_operand_i)}};
     end
     else if ((opcode_opcode_i & `INST_BNE_MASK) == `INST_BNE) // bne
     begin
-        branch_r      = 1'b1;    
-        branch_taken_r= (opcode_ra_operand_i != opcode_rb_operand_i);
+        vote3_branch_r = {3{ 1'b1}};    
+        vote3_branch_taken_r = {3{ (opcode_ra_operand_i != opcode_rb_operand_i)}};
     end
     else if ((opcode_opcode_i & `INST_BLT_MASK) == `INST_BLT) // blt
     begin
-        branch_r      = 1'b1;
-        branch_taken_r= less_than_signed(opcode_ra_operand_i, opcode_rb_operand_i);
+        vote3_branch_r = {3{ 1'b1}};
+        vote3_branch_taken_r = {3{ less_than_signed(opcode_ra_operand_i, opcode_rb_operand_i)}};
     end
     else if ((opcode_opcode_i & `INST_BGE_MASK) == `INST_BGE) // bge
     begin
-        branch_r      = 1'b1;    
-        branch_taken_r= greater_than_signed(opcode_ra_operand_i,opcode_rb_operand_i) | (opcode_ra_operand_i == opcode_rb_operand_i);
+        vote3_branch_r = {3{ 1'b1}};    
+        vote3_branch_taken_r = {3{ greater_than_signed(opcode_ra_operand_i,opcode_rb_operand_i) | (opcode_ra_operand_i == opcode_rb_operand_i)}};
     end
     else if ((opcode_opcode_i & `INST_BLTU_MASK) == `INST_BLTU) // bltu
     begin
-        branch_r      = 1'b1;    
-        branch_taken_r= (opcode_ra_operand_i < opcode_rb_operand_i);
+        vote3_branch_r = {3{ 1'b1}};    
+        vote3_branch_taken_r = {3{ (opcode_ra_operand_i < opcode_rb_operand_i)}};
     end
     else if ((opcode_opcode_i & `INST_BGEU_MASK) == `INST_BGEU) // bgeu
     begin
-        branch_r      = 1'b1;
-        branch_taken_r= (opcode_ra_operand_i >= opcode_rb_operand_i);
+        vote3_branch_r = {3{ 1'b1}};
+        vote3_branch_taken_r = {3{ (opcode_ra_operand_i >= opcode_rb_operand_i)}};
     end
 end
 
-reg        branch_taken_q;
-reg        branch_ntaken_q;
+                          
+wire branch_taken_q;
+reg [3:0]vote3_branch_taken_q;
+vote3 vote3module_branch_taken_q(.r3(vote3_branch_taken_q),.r(branch_taken_q));
+                           
+wire branch_ntaken_q;
+reg [3:0]vote3_branch_ntaken_q;
+vote3 vote3module_branch_ntaken_q(.r3(vote3_branch_ntaken_q),.r(branch_ntaken_q));
 reg [31:0] pc_x_q;
 reg [31:0] pc_m_q;
-reg        branch_call_q;
-reg        branch_ret_q;
-reg        branch_jmp_q;
+                         
+wire branch_call_q;
+reg [3:0]vote3_branch_call_q;
+vote3 vote3module_branch_call_q(.r3(vote3_branch_call_q),.r(branch_call_q));
+                        
+wire branch_ret_q;
+reg [3:0]vote3_branch_ret_q;
+vote3 vote3module_branch_ret_q(.r3(vote3_branch_ret_q),.r(branch_ret_q));
+                        
+wire branch_jmp_q;
+reg [3:0]vote3_branch_jmp_q;
+vote3 vote3module_branch_jmp_q(.r3(vote3_branch_jmp_q),.r(branch_jmp_q));
 
 always @ (posedge clk_i or posedge rst_i)
 if (rst_i)
 begin
-    branch_taken_q   <= 1'b0;
-    branch_ntaken_q  <= 1'b0;
+    vote3_branch_taken_q <= {3{ 1'b0}};
+    vote3_branch_ntaken_q <= {3{ 1'b0}};
     pc_x_q           <= 32'b0;
     pc_m_q           <= 32'b0;
-    branch_call_q    <= 1'b0;
-    branch_ret_q     <= 1'b0;
-    branch_jmp_q     <= 1'b0;
+    vote3_branch_call_q <= {3{ 1'b0}};
+    vote3_branch_ret_q <= {3{ 1'b0}};
+    vote3_branch_jmp_q <= {3{ 1'b0}};
 end
 else if (opcode_valid_i)
 begin
-    branch_taken_q   <= branch_r && opcode_valid_i & branch_taken_r;
-    branch_ntaken_q  <= branch_r && opcode_valid_i & ~branch_taken_r;
+    vote3_branch_taken_q <= {3{ branch_r && opcode_valid_i & branch_taken_r}};
+    vote3_branch_ntaken_q <= {3{ branch_r && opcode_valid_i & ~branch_taken_r}};
     pc_x_q           <= branch_taken_r ? branch_target_r : opcode_pc_i + 32'd4;
-    branch_call_q    <= branch_r && opcode_valid_i && branch_call_r;
-    branch_ret_q     <= branch_r && opcode_valid_i && branch_ret_r;
-    branch_jmp_q     <= branch_r && opcode_valid_i && branch_jmp_r;
+    vote3_branch_call_q <= {3{ branch_r && opcode_valid_i && branch_call_r}};
+    vote3_branch_ret_q <= {3{ branch_r && opcode_valid_i && branch_ret_r}};
+    vote3_branch_jmp_q <= {3{ branch_r && opcode_valid_i && branch_jmp_r}};
     pc_m_q           <= opcode_pc_i;
 end
 

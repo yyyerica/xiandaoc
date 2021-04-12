@@ -155,7 +155,10 @@ wire branch_misaligned_w = (issue_branch_taken_i && issue_branch_target_i[1:0] !
 
 `define RD_IDX_R    11:7
 
-reg                     valid_e1_q;
+                                   
+wire valid_e1_q;
+reg [3:0]vote3_valid_e1_q;
+vote3 vote3module_valid_e1_q(.r3(vote3_valid_e1_q),.r(valid_e1_q));
 reg [`PCINFO_W-1:0]     ctrl_e1_q;
 reg [31:0]              pc_e1_q;
 reg [31:0]              npc_e1_q;
@@ -167,7 +170,7 @@ reg [`EXCEPTION_W-1:0]  exception_e1_q;
 always @ (posedge clk_i or posedge rst_i)
 if (rst_i)
 begin
-    valid_e1_q      <= 1'b0;
+    vote3_valid_e1_q <= {3{ 1'b0}};
     ctrl_e1_q       <= `PCINFO_W'b0;
     pc_e1_q         <= 32'b0;
     npc_e1_q        <= 32'b0;
@@ -181,7 +184,7 @@ else if (issue_stall_i)
     ;
 else if ((issue_valid_i && issue_accept_i) && ~(squash_e1_e2_o || squash_e1_e2_i))
 begin
-    valid_e1_q                  <= 1'b1;
+    vote3_valid_e1_q <= {3{ 1'b1}};
     ctrl_e1_q[`PCINFO_ALU]      <= ~(issue_lsu_i | issue_csr_i | issue_div_i | issue_mul_i);
     ctrl_e1_q[`PCINFO_LOAD]     <= issue_lsu_i &  issue_rd_valid_i & ~take_interrupt_i; // TODO: Check
     ctrl_e1_q[`PCINFO_STORE]    <= issue_lsu_i & ~issue_rd_valid_i & ~take_interrupt_i;
@@ -204,7 +207,7 @@ end
 // No valid instruction (or pipeline flush event)
 else
 begin
-    valid_e1_q      <= 1'b0;
+    vote3_valid_e1_q <= {3{ 1'b0}};
     ctrl_e1_q       <= `PCINFO_W'b0;
     pc_e1_q         <= 32'b0;
     npc_e1_q        <= 32'b0;
@@ -230,9 +233,15 @@ assign operand_rb_e1_o = operand_rb_e1_q;
 //-------------------------------------------------------------
 // E2 / Mem result
 //------------------------------------------------------------- 
-reg                     valid_e2_q;
+                                   
+wire valid_e2_q;
+reg [3:0]vote3_valid_e2_q;
+vote3 vote3module_valid_e2_q(.r3(vote3_valid_e2_q),.r(valid_e2_q));
 reg [`PCINFO_W-1:0]     ctrl_e2_q;
-reg                     csr_wr_e2_q;
+                                    
+wire csr_wr_e2_q;
+reg [3:0]vote3_csr_wr_e2_q;
+vote3 vote3module_csr_wr_e2_q(.r3(vote3_csr_wr_e2_q),.r(csr_wr_e2_q));
 reg [31:0]              csr_wdata_e2_q;
 reg [31:0]              result_e2_q;
 reg [31:0]              pc_e2_q;
@@ -245,9 +254,9 @@ reg [`EXCEPTION_W-1:0]  exception_e2_q;
 always @ (posedge clk_i or posedge rst_i)
 if (rst_i)
 begin
-    valid_e2_q      <= 1'b0;
+    vote3_valid_e2_q <= {3{ 1'b0}};
     ctrl_e2_q       <= `PCINFO_W'b0;
-    csr_wr_e2_q     <= 1'b0;
+    vote3_csr_wr_e2_q <= {3{ 1'b0}};
     csr_wdata_e2_q  <= 32'b0;
     pc_e2_q         <= 32'b0;
     npc_e2_q        <= 32'b0;
@@ -263,9 +272,9 @@ else if (issue_stall_i)
 // Pipeline flush
 else if (squash_e1_e2_o || squash_e1_e2_i)
 begin
-    valid_e2_q      <= 1'b0;
+    vote3_valid_e2_q <= {3{ 1'b0}};
     ctrl_e2_q       <= `PCINFO_W'b0;
-    csr_wr_e2_q     <= 1'b0;
+    vote3_csr_wr_e2_q <= {3{ 1'b0}};
     csr_wdata_e2_q  <= 32'b0;
     pc_e2_q         <= 32'b0;
     npc_e2_q        <= 32'b0;
@@ -278,9 +287,9 @@ end
 // Normal pipeline advance
 else
 begin
-    valid_e2_q      <= valid_e1_q;
+    vote3_valid_e2_q <= {3{ valid_e1_q}};
     ctrl_e2_q       <= ctrl_e1_q;
-    csr_wr_e2_q     <= csr_result_write_e1_i;
+    vote3_csr_wr_e2_q <= {3{ csr_result_write_e1_i}};
     csr_wdata_e2_q  <= csr_result_wdata_e1_i;
     pc_e2_q         <= pc_e1_q;
     npc_e2_q        <= npc_e1_q;
@@ -294,7 +303,7 @@ begin
     // If frontend reports bad instruction, ignore later CSR errors...
     else if (|exception_e1_q)
     begin
-        valid_e2_q      <= 1'b0;
+        vote3_valid_e2_q <= {3{ 1'b0}};
         exception_e2_q  <= exception_e1_q;
     end
     else
@@ -358,7 +367,10 @@ assign squash_e1_e2_o = squash_e1_e2_w | squash_e1_e2_q;
 //------------------------------------------------------------- 
 reg                     valid_wb_q;
 reg [`PCINFO_W-1:0]     ctrl_wb_q;
-reg                     csr_wr_wb_q;
+                                    
+wire csr_wr_wb_q;
+reg [3:0]vote3_csr_wr_wb_q;
+vote3 vote3module_csr_wr_wb_q(.r3(vote3_csr_wr_wb_q),.r(csr_wr_wb_q));
 reg [31:0]              csr_wdata_wb_q;
 reg [31:0]              result_wb_q;
 reg [31:0]              pc_wb_q;
@@ -373,7 +385,7 @@ if (rst_i)
 begin
     valid_wb_q      <= 1'b0;
     ctrl_wb_q       <= `PCINFO_W'b0;
-    csr_wr_wb_q     <= 1'b0;
+    vote3_csr_wr_wb_q <= {3{ 1'b0}};
     csr_wdata_wb_q  <= 32'b0;
     pc_wb_q         <= 32'b0;
     npc_wb_q        <= 32'b0;
@@ -390,7 +402,7 @@ else if (squash_wb_i)
 begin
     valid_wb_q      <= 1'b0;
     ctrl_wb_q       <= `PCINFO_W'b0;
-    csr_wr_wb_q     <= 1'b0;
+    vote3_csr_wr_wb_q <= {3{ 1'b0}};
     csr_wdata_wb_q  <= 32'b0;
     pc_wb_q         <= 32'b0;
     npc_wb_q        <= 32'b0;
@@ -415,7 +427,7 @@ begin
         valid_wb_q      <= valid_e2_q;
     endcase
 
-    csr_wr_wb_q     <= csr_wr_e2_q;  // TODO: Fault disable???
+    vote3_csr_wr_wb_q <= {3{ csr_wr_e2_q}};  // TODO: Fault disable???
     csr_wdata_wb_q  <= csr_wdata_e2_q;
 
     // Exception - squash writeback

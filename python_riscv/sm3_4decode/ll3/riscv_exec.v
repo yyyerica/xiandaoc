@@ -305,19 +305,31 @@ endfunction
 //-------------------------------------------------------------
 // Execute - Branch operations
 //-------------------------------------------------------------
-reg        branch_r;
-reg        branch_taken_r;
+                    
+wire branch_r;
+reg [3:0]vote3_branch_r;
+vote3 vote3module_branch_r(.r3(vote3_branch_r),.r(branch_r));
+                          
+wire branch_taken_r;
+reg [3:0]vote3_branch_taken_r;
+vote3 vote3module_branch_taken_r(.r3(vote3_branch_taken_r),.r(branch_taken_r));
 reg [31:0] branch_target_r;
-reg        branch_call_r;
-reg        branch_ret_r;
+                         
+wire branch_call_r;
+reg [3:0]vote3_branch_call_r;
+vote3 vote3module_branch_call_r(.r3(vote3_branch_call_r),.r(branch_call_r));
+                        
+wire branch_ret_r;
+reg [3:0]vote3_branch_ret_r;
+vote3 vote3module_branch_ret_r(.r3(vote3_branch_ret_r),.r(branch_ret_r));
 reg        branch_jmp_r;
 
 always @ *
 begin
-    branch_r        = 1'b0;
-    branch_taken_r  = 1'b0;
-    branch_call_r   = 1'b0;
-    branch_ret_r    = 1'b0;
+    vote3_branch_r = {3{ 1'b0}};
+    vote3_branch_taken_r = {3{ 1'b0}};
+    vote3_branch_call_r = {3{ 1'b0}};
+    vote3_branch_ret_r = {3{ 1'b0}};
     branch_jmp_r    = 1'b0;
 
     // Default branch_r target is relative to current PC
@@ -325,51 +337,51 @@ begin
 
     if ((opcode_opcode_i & `INST_JAL_MASK) == `INST_JAL) // jal
     begin
-        branch_r        = 1'b1;
-        branch_taken_r  = 1'b1;
+        vote3_branch_r = {3{ 1'b1}};
+        vote3_branch_taken_r = {3{ 1'b1}};
         branch_target_r = opcode_pc_i + jimm20_r;
-        branch_call_r   = (opcode_rd_idx_i == 5'd1); // RA
+        vote3_branch_call_r = {3{ (opcode_rd_idx_i == 5'd1)}}; // RA
         branch_jmp_r    = 1'b1;
     end
     else if ((opcode_opcode_i & `INST_JALR_MASK) == `INST_JALR) // jalr
     begin
-        branch_r            = 1'b1;
-        branch_taken_r      = 1'b1;
+        vote3_branch_r = {3{ 1'b1}};
+        vote3_branch_taken_r = {3{ 1'b1}};
         branch_target_r     = opcode_ra_operand_i + imm12_r;
         branch_target_r[0]  = 1'b0;
-        branch_ret_r        = (opcode_ra_idx_i == 5'd1 && imm12_r[11:0] == 12'b0); // RA
-        branch_call_r       = ~branch_ret_r && (opcode_rd_idx_i == 5'd1); // RA
+        vote3_branch_ret_r = {3{ (opcode_ra_idx_i == 5'd1 && imm12_r[11:0] == 12'b0)}}; // RA
+        vote3_branch_call_r = {3{ ~branch_ret_r && (opcode_rd_idx_i == 5'd1)}}; // RA
         branch_jmp_r        = ~(branch_call_r | branch_ret_r);
     end
     else if ((opcode_opcode_i & `INST_BEQ_MASK) == `INST_BEQ) // beq
     begin
-        branch_r      = 1'b1;
-        branch_taken_r= (opcode_ra_operand_i == opcode_rb_operand_i);
+        vote3_branch_r = {3{ 1'b1}};
+        vote3_branch_taken_r = {3{ (opcode_ra_operand_i == opcode_rb_operand_i)}};
     end
     else if ((opcode_opcode_i & `INST_BNE_MASK) == `INST_BNE) // bne
     begin
-        branch_r      = 1'b1;    
-        branch_taken_r= (opcode_ra_operand_i != opcode_rb_operand_i);
+        vote3_branch_r = {3{ 1'b1}};    
+        vote3_branch_taken_r = {3{ (opcode_ra_operand_i != opcode_rb_operand_i)}};
     end
     else if ((opcode_opcode_i & `INST_BLT_MASK) == `INST_BLT) // blt
     begin
-        branch_r      = 1'b1;
-        branch_taken_r= less_than_signed(opcode_ra_operand_i, opcode_rb_operand_i);
+        vote3_branch_r = {3{ 1'b1}};
+        vote3_branch_taken_r = {3{ less_than_signed(opcode_ra_operand_i, opcode_rb_operand_i)}};
     end
     else if ((opcode_opcode_i & `INST_BGE_MASK) == `INST_BGE) // bge
     begin
-        branch_r      = 1'b1;    
-        branch_taken_r= greater_than_signed(opcode_ra_operand_i,opcode_rb_operand_i) | (opcode_ra_operand_i == opcode_rb_operand_i);
+        vote3_branch_r = {3{ 1'b1}};    
+        vote3_branch_taken_r = {3{ greater_than_signed(opcode_ra_operand_i,opcode_rb_operand_i) | (opcode_ra_operand_i == opcode_rb_operand_i)}};
     end
     else if ((opcode_opcode_i & `INST_BLTU_MASK) == `INST_BLTU) // bltu
     begin
-        branch_r      = 1'b1;    
-        branch_taken_r= (opcode_ra_operand_i < opcode_rb_operand_i);
+        vote3_branch_r = {3{ 1'b1}};    
+        vote3_branch_taken_r = {3{ (opcode_ra_operand_i < opcode_rb_operand_i)}};
     end
     else if ((opcode_opcode_i & `INST_BGEU_MASK) == `INST_BGEU) // bgeu
     begin
-        branch_r      = 1'b1;
-        branch_taken_r= (opcode_ra_operand_i >= opcode_rb_operand_i);
+        vote3_branch_r = {3{ 1'b1}};
+        vote3_branch_taken_r = {3{ (opcode_ra_operand_i >= opcode_rb_operand_i)}};
     end
 end
 
